@@ -1,10 +1,12 @@
-# CEM Benfica — Tour Virtual v1.3
+# CEM Benfica — Tour Virtual v1.3.1
 
 Protótipo P01–P03 para telemóvel, com navegação 3D contínua, orientação do iPhone e deslocação experimental por GPS.
 
+v1.3.1 altera apenas a interface: Liquid Glass translúcido e botão **Minimizar/Expandir** no painel inferior. Com o painel minimizado, a posição e a precisão GPS continuam visíveis; o GPS e a orientação continuam ativos. O comportamento de tracking da v1.3 foi conservado.
+
 ## Testar no iPhone
 
-1. Abrir https://jf-cem.github.io/tour-virtual/?v=1.3 no Safari.
+1. Abrir https://jf-cem.github.io/tour-virtual/?v=1.3.1 no Safari.
 2. Tocar em **Olhar com o telemóvel** e autorizar a orientação. Segurar o telemóvel à frente; a primeira leitura ancora o olhar atual.
 3. Em **Local do teste**, manter **Teste onde estou** para experimentar fora de Benfica.
 4. Tocar em **Iniciar caminhada**, autorizar a localização e ficar parado durante a preparação (pelo menos 10 segundos e 5 leituras estáveis).
