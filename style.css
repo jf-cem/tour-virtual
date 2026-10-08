@@ -16,3 +16,21 @@
 .controls.minimized{padding:7px 14px 9px;overflow:visible}.controls.minimized .progress-head{height:44px}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:rgba(245,251,247,.91)}}
 @media(max-width:350px){.progress-head strong{font-size:12px;max-width:33%}.progress-head>span{font-size:10px}.progress-head #panel-toggle{padding:8px;font-size:10px}}
+
+/* v1.3.2 — one navigation header and free movement controls. */
+.header-actions{display:flex;gap:6px;flex-shrink:0}.header-actions button{font-size:12px;padding:10px}
+.header-popover{position:fixed;right:20px;top:102px;width:min(350px,calc(100% - 24px));padding:18px;z-index:3;font-size:12px;line-height:1.5}
+.header-popover label{display:block;margin-bottom:8px}.header-popover select,.controls select{width:100%;font:inherit;font-size:12px;padding:9px;border-radius:9px;border:1px solid #ffffffb0;background:#edf6efb3;color:#173e35}.header-popover p{margin-bottom:0}
+#tracking-options{margin:0}.progress-summary{flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.progress-summary strong{max-width:none;font-size:13px}.progress-summary span{font-size:10px;white-space:nowrap}
+.progress-head #reset{flex-shrink:0;font-size:10px;padding:8px;min-height:40px}.progress-head #panel-toggle{font-size:10px;padding:8px;min-height:40px}
+.phone-controls{margin-top:8px}.phone-controls #motion-toggle{width:calc(100% - 86px);margin-right:4px}.phone-controls #recenter{width:77px;font-size:11px;padding:9px 6px}
+#manual-hint{margin:6px 0;text-align:left}.controls.minimized .progress-head{height:auto;min-height:40px}
+#direction-pad{position:fixed;left:20px;bottom:max(28px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:5px;padding:7px;border-radius:19px;z-index:1;touch-action:none;user-select:none;-webkit-user-select:none;background:rgba(239,249,244,.3)}
+#direction-pad button{padding:0;font-size:23px;touch-action:none;background:rgba(248,255,251,.4);font-weight:500}
+#direction-pad button[data-direction=forward]{grid-column:2}#direction-pad button[data-direction=left]{grid-column:1;grid-row:2}#direction-pad button[data-direction=back]{grid-column:2;grid-row:2}#direction-pad button[data-direction=right]{grid-column:3;grid-row:2}
+#direction-pad button.held{background:rgba(20,77,59,.8);color:white}
+body:has(#direction-pad:not([hidden])) .context{display:none}
+@media(max-width:600px){#direction-pad{left:16px;bottom:calc(var(--controls-height,300px) + 28px)}.header-actions{gap:4px}.header-actions button{padding:9px 7px;font-size:10px}.brand{gap:7px}.brand strong{font-size:15px}.header-popover{top:145px;right:12px}.progress-head{gap:5px}.progress-summary{gap:3px 6px}.progress-summary strong{font-size:12px}.controls{padding:12px 14px}}
+@media(max-width:360px){header{padding:9px}.badge{width:30px;height:34px;font-size:10px}.brand div>span{font-size:9px}.brand strong{font-size:14px}.header-actions button{font-size:9px;padding:9px 5px}.controls{padding:10px}.progress-head #panel-toggle,.progress-head #reset{padding:7px 5px;font-size:9px}.progress-summary{flex-direction:column;align-items:flex-start}}
+@media(max-height:480px){#direction-pad{left:18px;bottom:18px}.header-popover{top:90px;max-height:calc(100dvh - 105px);overflow:auto}.controls{width:350px}}
+@media(max-width:900px) and (min-height:481px){#direction-pad{left:16px;bottom:calc(var(--controls-height,300px) + 28px)}body:has(#direction-pad:not([hidden])) .controls{max-height:calc(100dvh - 310px)}}

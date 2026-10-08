@@ -15,10 +15,17 @@
   toggle.addEventListener('click', () => setExpanded(body.hidden));
   const accuracy = document.getElementById('gps-accuracy');
   function updateCompact() {
-    compact.textContent = accuracy.textContent;
+    const mode=document.getElementById('manual-mode').value;
+    compact.textContent = mode==='route'?accuracy.textContent:mode==='keyboard'?'Movimento livre · WASD':'Movimento livre · setas';
     compact.title = document.getElementById('tracking-status').textContent;
   }
   new MutationObserver(updateCompact).observe(accuracy, {childList:true, subtree:true, characterData:true});
   new MutationObserver(updateCompact).observe(document.getElementById('tracking-status'), {childList:true, subtree:true, characterData:true});
+  document.addEventListener('navigationmodechange',updateCompact);
+  const location=document.getElementById('tracking-options'),locationToggle=document.getElementById('location-toggle');
+  function closeLocation(){location.hidden=true;locationToggle.setAttribute('aria-expanded','false');}
+  locationToggle.onclick=()=>{location.hidden=!location.hidden;locationToggle.setAttribute('aria-expanded',String(!location.hidden));document.getElementById('help-panel').hidden=true;document.getElementById('help').setAttribute('aria-expanded','false');};
+  document.addEventListener('click',e=>{if(!location.contains(e.target)&&!locationToggle.contains(e.target))closeLocation();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!location.hidden){closeLocation();locationToggle.focus();}});
   updateCompact();
 })();
