@@ -1,29 +1,32 @@
 <!doctype html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CEM Benfica · Tour Virtual v1.3.2</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css?v=1.3.2"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script></head>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CEM Benfica · Tour Virtual v1.3.3</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css?v=1.3.3"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script></head>
 <body>
 <main id="viewport" aria-label="Espaço virtual CEM Benfica"></main>
-<header class="glass"><div class="brand"><span class="badge">CEM</span><div><strong>Benfica</strong><span>v1.3.2 · P01–P03</span></div></div><div class="header-actions"><button id="location-toggle" aria-expanded="false" aria-controls="tracking-options">Local do teste</button><button id="help" aria-expanded="false" aria-controls="help-panel">Como explorar</button></div></header>
+<header class="glass"><div class="brand"><span class="badge">CEM</span><div><strong>Benfica</strong><span>v1.3.3 · P01–P03</span></div></div><div class="header-actions"><button id="location-toggle" aria-expanded="false" aria-controls="tracking-options">Local do teste</button><button id="help" aria-expanded="false" aria-controls="help-panel">Como explorar</button></div></header>
 <aside id="tracking-options" class="glass header-popover" hidden><label for="tracking-mode">Onde vais caminhar?</label><select id="tracking-mode"><option value="remote">Teste onde estou</option><option value="site">Percurso real em Benfica</option></select><p id="mode-description">P01 fica onde inicias. Afasta-te em linha reta para avançar e regressa para recuar.</p></aside>
 <aside id="help-panel" class="glass" hidden><strong>Explora o espaço</strong><p>Abre no Safari e permite localização e orientação. Faz o teste ao ar livre. Na preparação do GPS, fica parado cerca de 10 segundos.</p><p>No teste fora de Benfica, caminha em linha reta e regressa pelo mesmo caminho. O afastamento do ponto inicial faz avançar a tour; o regresso faz recuar.</p><p>Em Exploração manual, escolhe Teclado WASD para andar livremente (W/S em frente/atrás; A/D de lado), Setas no ecrã para o mesmo movimento por toque, ou Percurso guiado para seguir P01–P03. Arrasta o modelo para olhar à volta.</p><p>O modelo tem perspectivas intermédias. Os renders D5 servem de referência visual e incluem elementos que podem faltar neste modelo.</p><p>Ativa «Olhar com o telemóvel» para orientar a vista. «Iniciar caminhada» usa GPS para mudar de posição. A localização pode ser imprecisa num trecho curto.</p></aside>
 <nav class="view-switch glass" aria-label="Tipo de vista"><button id="walk" aria-pressed="true">Percurso 3D</button><button id="plan" aria-pressed="false">Planta</button><button id="reference" aria-pressed="false">Render D5</button></nav>
 <div id="loading" class="glass" role="status">A preparar o espaço 3D…</div>
 <div class="context"><span id="hint">Arrasta para olhar à volta</span></div>
 <section class="controls glass" aria-label="Navegação pelo percurso">
-<div class="progress-head"><div class="progress-summary"><strong id="position">P01</strong><span id="distance">0,0 m</span></div><button id="reset" title="Voltar ao início">↺ Reiniciar</button><button id="panel-toggle" aria-expanded="true" aria-controls="controls-body"><span aria-hidden="true">⌄</span> <span id="panel-toggle-label">Minimizar</span></button></div>
+<div class="progress-head"><div class="progress-summary"><span class="position-label">Posição atual</span><strong id="position">P01</strong><span id="distance">0,0 m</span></div><button id="reset" title="Voltar ao início">↺ Reiniciar</button><button id="panel-toggle" aria-expanded="true" aria-controls="controls-body"><span aria-hidden="true">⌄</span> <span id="panel-toggle-label">Minimizar</span></button></div>
 <div id="compact-status" hidden aria-live="polite">GPS por ativar</div>
 <div id="controls-body">
 <div class="phone-controls">
+<section class="control-section look-section" aria-labelledby="look-title"><h2 id="look-title">Olhar à volta</h2><div class="look-actions">
 <button id="motion-toggle" aria-pressed="false" disabled>Olhar com o telemóvel</button><button id="recenter" title="Recentrar o olhar">Recentrar</button>
-<p id="motion-status" role="status">Olhar por toque disponível.</p>
+</div><p id="motion-status" role="status">Olhar por toque disponível.</p>
 
-<button id="gps-toggle" class="primary" aria-pressed="false" disabled>Iniciar caminhada</button><span id="gps-accuracy">GPS por ativar</span>
+</section>
+<section class="control-section gps-section" aria-labelledby="gps-title"><div class="section-heading"><h2 id="gps-title">Caminhada com GPS</h2><span id="gps-accuracy">GPS por ativar</span></div><button id="gps-toggle" class="primary" aria-pressed="false" disabled>Iniciar caminhada</button>
 <p id="tracking-status" role="status">Ao ar livre: inicia parado e permite a localização.</p><button id="use-fix" hidden>Usar leitura atual</button>
-</div><details id="manual-controls"><summary>Exploração manual</summary><label for="manual-mode">Como queres deslocar-te?</label><select id="manual-mode" disabled><option value="keyboard">Teclado WASD · movimento livre</option><option value="arrows">Setas no ecrã · movimento livre</option><option value="route" selected>Percurso guiado · P01–P03</option></select><p id="manual-hint">Segue o percurso com os controlos abaixo.</p><div id="guided-controls"><div class="stops"><button data-stop="0">P01</button><button data-stop="1">P02</button><button data-stop="2">P03</button></div>
+<p id="notice">GPS experimental · não mede passos com precisão</p></section>
+</div><details id="manual-controls" class="control-section"><summary>Exploração manual</summary><label for="manual-mode">Como queres deslocar-te?</label><select id="manual-mode" disabled><option value="keyboard">Teclado WASD · movimento livre</option><option value="arrows">Setas no ecrã · movimento livre</option><option value="route" selected>Percurso guiado · P01–P03</option></select><p id="manual-hint">Segue o percurso com os controlos abaixo.</p><div id="guided-controls"><div class="stops"><button data-stop="0">P01</button><button data-stop="1">P02</button><button data-stop="2">P03</button></div>
 <input id="progress" type="range" min="0" max="1000" step="1" value="0" aria-label="Posição contínua no percurso" disabled>
 <div class="transport"><button id="back" disabled>← Recuar</button><button id="play" disabled>▶ Percorrer</button><button id="forward" disabled>Avançar →</button></div>
-</div></details><p id="notice">GPS experimental · não mede passos com precisão</p>
+</div></details>
 </div>
 </section>
 <nav id="direction-pad" class="glass" aria-label="Movimento livre" hidden><button data-direction="forward" aria-label="Andar em frente">↑</button><button data-direction="left" aria-label="Andar para a esquerda">←</button><button data-direction="back" aria-label="Andar para trás">↓</button><button data-direction="right" aria-label="Andar para a direita">→</button></nav>
-<script src="geo.js"></script><script src="gps-start.js"></script><script src="tracking-core.js"></script><script src="panel.js?v=1.3.2"></script><script type="module" src="app.js?v=1.3.2"></script>
+<script src="geo.js"></script><script src="gps-start.js"></script><script src="tracking-core.js"></script><script src="panel.js?v=1.3.3"></script><script type="module" src="app.js?v=1.3.3"></script>
 </body></html>

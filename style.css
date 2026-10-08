@@ -34,3 +34,37 @@ body:has(#direction-pad:not([hidden])) .context{display:none}
 @media(max-width:360px){header{padding:9px}.badge{width:30px;height:34px;font-size:10px}.brand div>span{font-size:9px}.brand strong{font-size:14px}.header-actions button{font-size:9px;padding:9px 5px}.controls{padding:10px}.progress-head #panel-toggle,.progress-head #reset{padding:7px 5px;font-size:9px}.progress-summary{flex-direction:column;align-items:flex-start}}
 @media(max-height:480px){#direction-pad{left:18px;bottom:18px}.header-popover{top:90px;max-height:calc(100dvh - 105px);overflow:auto}.controls{width:350px}}
 @media(max-width:900px) and (min-height:481px){#direction-pad{left:16px;bottom:calc(var(--controls-height,300px) + 28px)}body:has(#direction-pad:not([hidden])) .controls{max-height:calc(100dvh - 310px)}}
+
+/* v1.3.3 — one type family with explicit position, look, GPS and manual sections. */
+:root{font-family:system-ui,sans-serif}
+.controls button,.controls select,.controls input{font-family:inherit}
+.progress-head{padding-bottom:12px;border-bottom:1px solid #ffffff80;gap:8px}
+.progress-summary{display:grid;grid-template-columns:auto 1fr;column-gap:8px;row-gap:2px;align-items:baseline}
+.progress-summary .position-label{grid-column:1/-1;font-size:11px;font-weight:500;color:#355a4c}
+.progress-summary #position{font-size:16px;font-weight:750;max-width:none;line-height:1.3}
+.progress-summary #distance{font-size:11px;font-weight:400}
+.progress-head #reset,.progress-head #panel-toggle{font-size:11px;font-weight:600;padding:8px;min-height:40px}
+.controls .phone-controls{margin-top:0}
+.control-section{padding:13px 0}
+.control-section h2{font-size:14px;line-height:1.35;font-weight:700;margin:0 0 9px;color:#173e35}
+.look-actions{display:flex;gap:6px}
+.phone-controls .look-actions #motion-toggle{flex:1;width:auto;margin:0}
+.phone-controls .look-actions #recenter{width:auto;flex-shrink:0}
+.controls .look-actions button,.controls #gps-toggle,.controls .transport button{font-size:12px;font-weight:600;min-height:40px;padding:9px 10px}
+.controls .phone-controls p,.controls #manual-hint{font-size:12px;font-weight:400;line-height:1.45;text-align:left;margin:7px 0 0;color:#355a4c}
+.gps-section{border-top:1px solid #ffffff80}
+.section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:9px}
+.section-heading h2{margin:0}
+.phone-controls .section-heading #gps-accuracy{width:auto;font-size:11px;font-weight:500;text-align:right}
+.phone-controls #gps-toggle{width:100%}
+.controls #tracking-status{min-height:0}
+.controls .gps-section #notice{font-size:11px;color:#496658;margin:7px 0 0;text-align:left}
+.controls #manual-controls{border:1px solid #ffffff70;background:rgba(245,253,248,.22);border-radius:13px;margin:0;padding:0 12px}
+.controls #manual-controls>summary{font-size:14px;font-weight:700;color:#173e35;padding:12px 0;line-height:1.35}
+.controls #manual-controls label{font-size:12px;font-weight:500;margin:0 0 6px}
+.controls #manual-controls select{font-size:12px;font-weight:500;min-height:40px}
+.controls #manual-controls[open]{padding-bottom:12px}
+.controls.minimized .progress-head{padding:0;border:0}.controls.minimized .position-label{display:none}
+#compact-status{margin-top:3px;font-size:11px}
+@media(max-width:360px){.progress-head{gap:5px}.progress-head #reset,.progress-head #panel-toggle{font-size:10px;padding:7px 5px}.progress-summary{grid-template-columns:1fr}.progress-summary #position{font-size:14px}.progress-summary #distance{font-size:10px}.controls .look-actions button{padding:8px 6px;font-size:11px}}
+@media(max-height:480px){.control-section{padding:10px 0}.controls{max-height:calc(100dvh - 110px)}}
