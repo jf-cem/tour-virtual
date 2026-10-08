@@ -68,3 +68,10 @@ body:has(#direction-pad:not([hidden])) .context{display:none}
 #compact-status{margin-top:3px;font-size:11px}
 @media(max-width:360px){.progress-head{gap:5px}.progress-head #reset,.progress-head #panel-toggle{font-size:10px;padding:7px 5px}.progress-summary{grid-template-columns:1fr}.progress-summary #position{font-size:14px}.progress-summary #distance{font-size:10px}.controls .look-actions button{padding:8px 6px;font-size:11px}}
 @media(max-height:480px){.control-section{padding:10px 0}.controls{max-height:calc(100dvh - 110px)}}
+
+.controls.planning .phone-controls,.controls.planning #manual-controls{display:none}
+.planner-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.planner-actions button{flex:1;font-size:12px;min-height:40px}
+.controls #planner-status{font-size:12px;text-align:left;margin:0;line-height:1.45}
+.controls .planner-note{font-size:11px;text-align:left;margin:10px 0 0;line-height:1.4}
+#edit-route{width:100%;font-size:12px;margin:10px 0 3px}
+canvas.drawing-route{cursor:crosshair}

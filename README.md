@@ -1,8 +1,12 @@
-# CEM Benfica — Tour Virtual v1.3.3
+# CEM Benfica — Tour Virtual v1.3.4
 
 Protótipo P01–P03 para telemóvel, com navegação 3D contínua, orientação do iPhone e deslocação experimental por GPS.
 
-v1.3.3 melhora a hierarquia do painel com uma única fonte e secções separadas: Posição atual, Olhar à volta, Caminhada com GPS e Exploração manual. Não altera o movimento, GPS ou orientação.
+v1.3.4 permite desenhar um percurso na **Planta**. Escolher **Desenhar percurso**, tocar em dois ou mais pontos ou arrastar para traçar, e confirmar **Usar percurso**. O primeiro ponto define o início. O modo guiado passa a seguir o desenho com Avançar/Percorrer/Recuar e a barra de progresso. **Desfazer ponto**, **Cancelar** e **Voltar a P01–P03** permitem corrigir ou repor o percurso. O desenho vive apenas na sessão atual, não é guardado no servidor. Não evita obstáculos e usa a mesma altura de olhar do protótipo.
+
+GPS e referências D5 continuam a usar o percurso original. Durante GPS, o editor fica bloqueado; o desenho é conservado para a exploração manual. As permissões e filtros GPS não foram alterados.
+
+A v1.3.3 melhora a hierarquia do painel com uma única fonte e secções separadas: Posição atual, Olhar à volta, Caminhada com GPS e Exploração manual. Não altera o movimento, GPS ou orientação.
 
 A v1.3.2 reúne progresso, Reiniciar e Minimizar na mesma linha; move **Local do teste** para o cabeçalho e remove a etiqueta dos materiais. Conserva Liquid Glass e o comportamento de tracking da v1.3.
 

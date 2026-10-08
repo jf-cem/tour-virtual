@@ -12,6 +12,7 @@
     toggle.querySelector('[aria-hidden]').textContent = expanded ? '⌄' : '⌃';
     document.getElementById('panel-toggle-label').textContent = expanded ? 'Minimizar' : 'Expandir';
   }
+  document.addEventListener('expandcontrols',()=>setExpanded(true));
   toggle.addEventListener('click', () => setExpanded(body.hidden));
   const accuracy = document.getElementById('gps-accuracy');
   function updateCompact() {
