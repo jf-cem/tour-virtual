@@ -1,3 +1,5 @@
+> **Histórico v1.4:** substituído pelo [guião GPS v1.4.1](GUIAO-GPS-v1.4.1.md). A opção sem GPS abaixo já foi retirada.
+
 # Guião curto — João, iPhone via HTTPS
 
 Usar o Safari no link HTTPS da **tour existente**, quando o integrador publicar v1.4. Localhost do computador não é o URL do telefone. Não é necessário instalar aplicação. Chrome Android é uma segunda ronda.

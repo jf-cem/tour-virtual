@@ -31,7 +31,8 @@ function createEstimator(options={}){
  const p={...PARAMETERS,...options.params},mode=options.mode||'steps',total=options.total??16.38;
  let x=0,direction=0,directionAt=-Infinity,directionSource='unknown',uncertainty=0,steps=0,predicted=0,correction=0,lastFix=null,lastInput=-Infinity,lastTick=null,pending=null,activity='uncertain',sensorAt=-Infinity,reason='anchor-required',anchored=false,blocked=false,anchorAt=options.start??0,gpsGate='',reverseCandidate=null,gpsActivityUntil=-Infinity;
  const suspend=r=>{reason=r;pending=null;return snapshot(lastInput);};
- function snapshot(t){const age=lastFix?Math.max(0,t-lastFix.t+lastFix.age):null;return {alongMeters:x,direction:t-directionAt<=p.directionMs?direction:0,directionSource:direction===0?directionSource:t-directionAt<=p.directionMs?directionSource:'expired',uncertaintyMeters:uncertainty,confidenceLevel:uncertainty<=3?'operational-within-budget':'operational-uncertain',status:reason?'suspended':'tracking',sourceMode:mode,lastFixAgeMs:age,steps,predictedDistanceMeters:predicted,correctionMeters:correction,activity,reason,anchored};}
+ function directionValid(t){return t-directionAt<=p.directionMs||(mode==='steps'&&directionSource==='confirmed'&&lastFix&&t-lastFix.t+lastFix.age<=p.gpsAgeMs);}
+ function snapshot(t){const age=lastFix?Math.max(0,t-lastFix.t+lastFix.age):null;return {alongMeters:x,direction:directionValid(t)?direction:0,directionSource:direction===0?directionSource:directionValid(t)?directionSource:'expired',uncertaintyMeters:uncertainty,confidenceLevel:uncertainty<=3?'operational-within-budget':'operational-uncertain',status:reason?'suspended':'tracking',sourceMode:mode,lastFixAgeMs:age,steps,predictedDistanceMeters:predicted,correctionMeters:correction,activity,reason,anchored};}
  function input(e){if(!finite(e.t)||e.t<lastInput)return snapshot(lastInput);lastInput=e.t;
   if(e.type==='anchor'){x=clamp(e.along??0,0,total);uncertainty=e.uncertainty??0;anchored=true;blocked=false;anchorAt=e.t;gpsGate='';reverseCandidate=null;gpsActivityUntil=-Infinity;predicted=0;pending=null;lastFix=null;lastTick=e.t;direction=0;reason='direction-required';return snapshot(e.t);}
   if(e.type==='direction'){if(!anchored)return suspend('anchor-required');direction=e.direction===-1?-1:e.direction===1?1:0;reverseCandidate=null;directionAt=e.t;directionSource='confirmed';reason=direction?'':'direction-required';return snapshot(e.t);}
@@ -52,7 +53,7 @@ function createEstimator(options={}){
      if(headingConflict){direction=0;reverseCandidate=null;directionSource='gps-heading-conflict';}
      else if(direction&&candidate!==direction){reverseCandidate={direction:candidate,t:e.t};direction=0;directionSource='gps-candidate';pending=null;}
      else if(reverseCandidate&&(reverseCandidate.direction!==candidate||e.t-reverseCandidate.t>p.directionMs)){reverseCandidate={direction:candidate,t:e.t};direction=0;directionSource='gps-candidate';}
-     else {direction=candidate;reverseCandidate=null;directionAt=e.t-e.age;directionSource='gps-displacement';}
+     else {const confirmed=directionSource==='confirmed'&&direction===candidate;direction=candidate;reverseCandidate=null;directionAt=e.t-e.age;directionSource=confirmed?'confirmed':'gps-displacement';}
      gpsActivityUntil=e.t-e.age+1500;activity='uncertain';
     }
    }
@@ -64,7 +65,7 @@ function createEstimator(options={}){
   }
   if(e.type==='step'){steps++;if(mode!=='steps'&&mode!=='anchored')return snapshot(e.t);
    if(blocked)return suspend('explicit-reanchor-required');
-   if(e.t-directionAt>p.directionMs||!direction){pending=null;return suspend('direction-required');}
+   if(!directionValid(e.t)||!direction){pending=null;return suspend('direction-required');}
    if(e.t-sensorAt>p.sensorGapMs)return suspend('motion-unavailable');
    if(mode==='steps'&&gpsGate)return suspend(gpsGate);
    const distance=p.stepMeters;
@@ -79,7 +80,7 @@ function createEstimator(options={}){
    if(mode!=='anchored'&&lastFix&&e.t-lastFix.t+lastFix.age>p.gpsAgeMs&&mode==='activity'){pending=null;return suspend('gps-unavailable');}
    if(pending!==null&&activity!=='stationary'){const d=clamp(pending-x,-p.correctionRate*dt,p.correctionRate*dt);x=clamp(x+d,0,total);correction+=d;if(Math.abs(pending-x)<.01)pending=null;}
    if(mode==='steps'||mode==='anchored'){
-    if(e.t-directionAt>p.directionMs){direction=0;if(pending===null)reason='direction-required';}
+    if(!directionValid(e.t)){direction=0;if(pending===null)reason='direction-required';}
     if((lastFix?e.t-lastFix.t+lastFix.age:e.t-anchorAt)>p.maxWithoutFixMs||predicted>=p.maxPredictionMeters||uncertainty>p.maxUncertaintyMeters){pending=null;reason='prediction-budget-exceeded';}
     else if(e.t-sensorAt>p.sensorGapMs&&pending===null)reason='motion-unavailable';
    }
@@ -92,7 +93,7 @@ function enu(origin,p){const rad=Math.PI/180;return {x:(p.lng-origin.lng)*rad*63
 function createProjector({origin,originAccuracy=0,axis=null,nodes=null,cumulative=null,total=16.38}){
  let segment=0,lastAlong=null;
  const points=nodes?.map(n=>enu(nodes[0],n));
- return {setAxis(endpoint,accuracy){const v=enu(origin,endpoint),length=Math.hypot(v.x,v.y);if(length<Math.max(8,2*(accuracy+originAccuracy)))return false;axis={x:v.x/length,y:v.y/length};return true;},hasAxis:()=>!!axis||!!nodes,accept(p){if(nodes&&p){segment=p.segment;lastAlong=p.along;}},
+ return {originAccuracy,setAxis(endpoint,accuracy){const v=enu(origin,endpoint),length=Math.hypot(v.x,v.y);if(length<Math.max(8,2*(accuracy+originAccuracy)))return false;axis={x:v.x/length,y:v.y/length};return true;},hasAxis:()=>!!axis||!!nodes,accept(p){if(nodes&&p){segment=p.segment;lastAlong=p.along;}},
  project(position,accuracy){
   if(!nodes){if(!axis)return null;const v=enu(origin,position);return {along:v.x*axis.x+v.y*axis.y,cross:Math.abs(v.x*axis.y-v.y*axis.x),accuracy:accuracy+originAccuracy,tangentHeading:(Math.atan2(axis.x,axis.y)*180/Math.PI+360)%360};}
   const v=enu(nodes[0],position),candidates=[];

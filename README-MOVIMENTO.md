@@ -1,3 +1,5 @@
+> **v1.4.1:** dois modos GPS em foco, preparação visível junto ao estado, sem modo só passos. Ver [guião atualizado](GUIAO-GPS-v1.4.1.md).
+
 # Tour Virtual v1.4 — piloto do motor de movimento
 
 Atualização da tour v1.3.4 existente, baseada em `00494b345ba6cb1ab0fdd49c8de9dee2d0ac8078`. Mantém modelo, renders D5, percurso, controlos, planta, layout principal e destino GitHub Pages. Não foi publicada. As opções adicionais estão em **Local do teste**, no popover existente. A página `ensaio.html` é um instrumento auxiliar, não substitui a tour.
@@ -19,7 +21,7 @@ Usa Geolocation (coordenadas/accuracy/timestamp; speed e heading quando informat
 
 Heading de deslocamento só verifica coerência com deslocamento projetado e velocidade >=0,8 m/s; não é somado como uma medida independente. Bússola/absolute são recolhidos quando expostos, mas não definem marcha nem eixo. Não usa Generic Sensor, código externo de detetores, câmara, ML, APIs nativas ou apps instaladas.
 
-Permissão de movimento não é inferida de orientação. Sem eventos ou com campos nulos, mostra esse estado e não fabrica passos. GPS + atividade pode funcionar com GPS quando a atividade é desconhecida. GPS + passos pode continuar brevemente com passos e sentido válido, dentro dos limites. Sem GPS, selecionar explicitamente passos ancorados: confirmar P01/sentido e aceitar distância estimada. Sem sinais suficientes, parar e usar manual. Ocultar a página termina a sessão e desliga subscrições; reinício exige nova âncora.
+Permissão de movimento não é inferida de orientação. Sem eventos ou com campos nulos, mostra esse estado e não fabrica passos. GPS + atividade pode funcionar com GPS quando a atividade é desconhecida. GPS + passos pode continuar brevemente com passos e sentido válido, dentro dos limites. Sem GPS, usar exploração manual; o modo de passos ancorados foi retirado do seletor na v1.4.1. Sem sinais suficientes, parar e usar manual. Ocultar a página termina a sessão e desliga subscrições; reinício exige nova âncora.
 
 ## Parâmetros iniciais por validar
 
@@ -31,7 +33,7 @@ Permissão de movimento não é inferida de orientação. Sem eventos ou com cam
 | Pico / libertação | 1,05 / 0,35 m/s² |
 | Rotação suspeita | >240 graus/s |
 | Paragem | energia <0,12; histerese temporal |
-| Horizonte de sentido | 5 s |
+| Horizonte de sentido | 5 s para inferência; confirmação manual mantida com GPS recente |
 | Idade GPS máxima | 10 s, incluindo atraso de aquisição |
 | Previsão sem fix | máximo 12 s e 6 m acumulados, incluindo ida/regresso |
 | Incerteza operacional máxima | 12 m |
@@ -44,7 +46,7 @@ Permissão de movimento não é inferida de orientação. Sem eventos ou com cam
 
 Incerteza é um orçamento de engenharia: soma conservadora de accuracy/origem/escala e 30% da distância prevista. Não é sigma, intervalo estatístico ou promessa de erro físico. O clamp nos extremos não reduz incerteza. Com origem de ±6–7 m, o limite de 12 m pode impedir previsão por passos; o ensaio deve mostrar esta limitação.
 
-A direção vem de deslocamento informativo no percurso ou confirmação humana. Inversão GPS pede duas evidências coerentes; rotação do olhar nunca inverte a marcha. Quando desconhecida/expirada, os passos contam no diagnóstico e são descartados para posição, sem salto posterior. GPS ainda pode corrigir posição absoluta. Lateralidade só é observável com eixo e fixes úteis; passos com sentido confirmado dependem da confirmação humana.
+A direção vem de deslocamento informativo no percurso ou confirmação humana. Inversão GPS pede duas evidências coerentes; rotação do olhar nunca inverte a marcha. Sem GPS recente, quando desconhecida/expirada, os passos contam no diagnóstico e são descartados para posição, sem salto posterior. GPS ainda pode corrigir posição absoluta. Lateralidade só é observável com eixo e fixes úteis; passos com sentido confirmado dependem da confirmação humana.
 
 ## Testes reproduzíveis
 
@@ -63,7 +65,7 @@ O comando `node tests/run-browser.cjs` inicia e termina o servidor e executa as 
 
 ```powershell
 $env:TOUR_URL='http://127.0.0.1:8786/'
-node tests/pilot-browser.cjs
+node tests/gps-modes-browser.cjs
 node tests/test-virtual-phone.cjs
 node tests/test-planner-v134.cjs
 node tests/test-manual-v132.cjs

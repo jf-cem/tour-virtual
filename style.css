@@ -82,3 +82,8 @@ canvas.drawing-route{cursor:crosshair}
 #movement-diagnostics {max-height:180px;overflow:auto;white-space:pre-wrap;font-size:10px}
 
 #tracking-options {max-height:calc(100dvh - 170px);overflow:auto}
+#walking-setup button{width:100%;margin-top:6px;min-height:40px}
+#direction-controls{display:flex;flex-wrap:wrap;gap:6px}
+#direction-controls button{flex:1;width:auto}
+#direction-controls p{width:100%;font-size:11px}
+#pilot-options details>summary{cursor:pointer;padding:8px 0}

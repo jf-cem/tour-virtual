@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
-import {createPhone} from './phone.js?v=1.4';
+import {createPhone} from './phone.js?v=1.4.1';
 import {moveFree,projectToRoute} from './manual.js';
 import {createPlanner,pathSegments,pathPosition} from './planner.js';
 const $=s=>document.querySelector(s),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
