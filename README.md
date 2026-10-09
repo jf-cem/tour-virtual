@@ -1,3 +1,5 @@
+> **v1.4.3 — olhar com eixos fixos:** o horizonte mantém-se nivelado e a inclinação inicial do telemóvel não roda os eixos do olhar. «Recentrar» repõe imediatamente a direção inicial da tour, com ou sem sensores ligados. A leitura seguinte usa essa vista como referência. Testes automatizados cobrem diferentes inclinações, orientação do ecrã, passagem dos 360° e recentragem. Falta validar num iPhone real.
+
 > **v1.4.2 — teste de fluidez:** preparação automática parado, GPS + atividade e GPS + passos. Ver [guião atual](GUIAO-GPS-v1.4.2.md).
 
 > **Atualização v1.4 do motor de movimento, versão experimental para teste no Pages:** ver [README-MOVIMENTO.md](README-MOVIMENTO.md), [integração](INTEGRACAO-MOVIMENTO.md) e [guião iPhone](GUIAO-IPHONE.md). O texto abaixo descreve a base v1.3.4.
