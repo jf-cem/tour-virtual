@@ -1,3 +1,5 @@
+> **v1.4.2 — teste de fluidez:** preparação automática parado, GPS + atividade e GPS + passos. Ver [guião atual](GUIAO-GPS-v1.4.2.md).
+
 > **Atualização v1.4 do motor de movimento, versão experimental para teste no Pages:** ver [README-MOVIMENTO.md](README-MOVIMENTO.md), [integração](INTEGRACAO-MOVIMENTO.md) e [guião iPhone](GUIAO-IPHONE.md). O texto abaixo descreve a base v1.3.4.
 
 # CEM Benfica — Tour Virtual v1.3.4

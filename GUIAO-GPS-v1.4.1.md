@@ -1,3 +1,5 @@
+> **v1.4.2:** preparação automática parado, sem marcar segundo ponto. Ver [guião atual](GUIAO-GPS-v1.4.2.md). O texto abaixo descreve a versão anterior.
+
 # Teste dos dois modos GPS — v1.4.1
 
 Abrir https://jf-cem.github.io/tour-virtual/?v=1.4.1 no Safari, ao ar livre.

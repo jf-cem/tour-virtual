@@ -27,8 +27,8 @@ function createLegacyPhone({getState,setTravel,setView,lookQuaternion}){
  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(active)stop('Caminhada parada porque saíste desta página. Reinicia quando regressares.');pauseLook();}});addEventListener('pagehide',()=>{if(active)stop();pauseLook();});
  return {active:()=>active,phase:()=>phase,quaternion:()=>motion&&orientation&&Date.now()-motionAt<3000?orientation:null,target:()=>phase==='walking'&&Date.now()-lastFix<=10000?target:null,stop,motionEnabled:()=>motion};
 }
-import {createPilot} from './movement-pilot.js?v=1.4.1';
+import {createPilot} from './movement-pilot.js?v=1.4.2';
 export function createPhone(options){
  const legacy=createLegacyPhone(options),pilot=createPilot({...options,legacy});
- return {active:()=>legacy.active()||pilot.active(),phase:()=>pilot.active()?pilot.phase():legacy.phase(),quaternion:legacy.quaternion,motionEnabled:legacy.motionEnabled,stop:()=>{pilot.stop();legacy.stop();},target:()=>pilot.active()?pilot.target():legacy.target(),experimental:()=>pilot.active(),present:pilot.present,diagnostics:pilot.diagnostics};
+ return {active:()=>legacy.active()||pilot.active(),phase:()=>pilot.active()?pilot.phase():legacy.phase(),quaternion:legacy.quaternion,motionEnabled:legacy.motionEnabled,stop:()=>{pilot.stop();legacy.stop();},target:()=>pilot.active()?pilot.target():legacy.target(),experimental:()=>pilot.active(),present:pilot.present,presentationSpeed:pilot.presentationSpeed,diagnostics:pilot.diagnostics};
 }

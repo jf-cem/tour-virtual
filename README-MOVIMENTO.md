@@ -1,3 +1,5 @@
+> **v1.4.2:** preparação automática parado, sem marcar segundo ponto. Ver [guião atual](GUIAO-GPS-v1.4.2.md). O texto abaixo descreve a versão anterior.
+
 > **v1.4.1:** dois modos GPS em foco, preparação visível junto ao estado, sem modo só passos. Ver [guião atualizado](GUIAO-GPS-v1.4.1.md).
 
 # Tour Virtual v1.4 — piloto do motor de movimento

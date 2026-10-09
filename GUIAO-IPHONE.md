@@ -1,3 +1,5 @@
+> **v1.4.2:** preparação automática parado, sem marcar segundo ponto. Ver [guião atual](GUIAO-GPS-v1.4.2.md). O texto abaixo descreve a versão anterior.
+
 > **Histórico v1.4:** substituído pelo [guião GPS v1.4.1](GUIAO-GPS-v1.4.1.md). A opção sem GPS abaixo já foi retirada.
 
 # Guião curto — João, iPhone via HTTPS

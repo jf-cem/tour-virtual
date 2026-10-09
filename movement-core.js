@@ -29,13 +29,13 @@ function createDetector(params={}){
 }
 function createEstimator(options={}){
  const p={...PARAMETERS,...options.params},mode=options.mode||'steps',total=options.total??16.38;
- let x=0,direction=0,directionAt=-Infinity,directionSource='unknown',uncertainty=0,steps=0,predicted=0,correction=0,lastFix=null,lastInput=-Infinity,lastTick=null,pending=null,activity='uncertain',sensorAt=-Infinity,reason='anchor-required',anchored=false,blocked=false,anchorAt=options.start??0,gpsGate='',reverseCandidate=null,gpsActivityUntil=-Infinity;
+ let x=0,direction=0,directionAt=-Infinity,directionSource='unknown',uncertainty=0,steps=0,predicted=0,correction=0,lastFix=null,directionFix=null,lastInput=-Infinity,lastTick=null,pending=null,activity='uncertain',sensorAt=-Infinity,reason='anchor-required',anchored=false,blocked=false,anchorAt=options.start??0,gpsGate='',reverseCandidate=null,gpsActivityUntil=-Infinity;
  const suspend=r=>{reason=r;pending=null;return snapshot(lastInput);};
- function directionValid(t){return t-directionAt<=p.directionMs||(mode==='steps'&&directionSource==='confirmed'&&lastFix&&t-lastFix.t+lastFix.age<=p.gpsAgeMs);}
+ function directionValid(t){return t-directionAt<=p.directionMs||(mode==='steps'&&['confirmed','start-forward','gps-displacement'].includes(directionSource)&&lastFix&&t-lastFix.t+lastFix.age<=p.gpsAgeMs);}
  function snapshot(t){const age=lastFix?Math.max(0,t-lastFix.t+lastFix.age):null;return {alongMeters:x,direction:directionValid(t)?direction:0,directionSource:direction===0?directionSource:directionValid(t)?directionSource:'expired',uncertaintyMeters:uncertainty,confidenceLevel:uncertainty<=3?'operational-within-budget':'operational-uncertain',status:reason?'suspended':'tracking',sourceMode:mode,lastFixAgeMs:age,steps,predictedDistanceMeters:predicted,correctionMeters:correction,activity,reason,anchored};}
  function input(e){if(!finite(e.t)||e.t<lastInput)return snapshot(lastInput);lastInput=e.t;
-  if(e.type==='anchor'){x=clamp(e.along??0,0,total);uncertainty=e.uncertainty??0;anchored=true;blocked=false;anchorAt=e.t;gpsGate='';reverseCandidate=null;gpsActivityUntil=-Infinity;predicted=0;pending=null;lastFix=null;lastTick=e.t;direction=0;reason='direction-required';return snapshot(e.t);}
-  if(e.type==='direction'){if(!anchored)return suspend('anchor-required');direction=e.direction===-1?-1:e.direction===1?1:0;reverseCandidate=null;directionAt=e.t;directionSource='confirmed';reason=direction?'':'direction-required';return snapshot(e.t);}
+  if(e.type==='anchor'){x=clamp(e.along??0,0,total);uncertainty=e.uncertainty??0;anchored=true;blocked=false;anchorAt=e.t;gpsGate='';reverseCandidate=null;gpsActivityUntil=-Infinity;predicted=0;pending=null;lastFix=null;directionFix=null;lastTick=e.t;direction=0;reason='direction-required';return snapshot(e.t);}
+  if(e.type==='direction'){if(!anchored)return suspend('anchor-required');direction=e.direction===-1?-1:e.direction===1?1:0;reverseCandidate=null;directionAt=e.t;directionSource=e.source==='start-forward'?'start-forward':'confirmed';reason=direction?'':'direction-required';return snapshot(e.t);}
   if(e.type==='pause'){blocked=true;pending=null;direction=0;return suspend('explicit-reanchor-required');}
   if(e.type==='activity'){activity=e.activity==='stationary'&&e.t<gpsActivityUntil?'uncertain':e.activity;sensorAt=e.t;return snapshot(e.t);}
   if(!anchored)return suspend('anchor-required');
@@ -47,7 +47,7 @@ function createEstimator(options={}){
    if(Math.abs(innovation)>p.reanchorMeters){blocked=true;pending=null;return suspend('explicit-reanchor-required');}
    if(blocked)return suspend('explicit-reanchor-required');
    // Informative displacement establishes travel direction; phone orientation never does.
-   if(lastFix){const delta=e.along-lastFix.along,gate=Math.max(1.5,(e.accuracy+lastFix.accuracy)*.5);
+   if(directionFix&&(activity!=='stationary'||finite(e.speed)&&e.speed>.8&&e.speed<p.maxSpeed)){const delta=e.along-directionFix.along,gate=Math.max(1.5,(e.accuracy+directionFix.accuracy)*.5);
     if(Math.abs(delta)>gate){const candidate=Math.sign(delta),expected=(e.tangentHeading+(candidate<0?180:0)+360)%360;
      const headingConflict=finite(e.heading)&&finite(e.speed)&&e.speed>=.8&&finite(e.tangentHeading)&&Math.abs(((e.heading-expected+540)%360)-180)>45;
      if(headingConflict){direction=0;reverseCandidate=null;directionSource='gps-heading-conflict';}
@@ -55,12 +55,14 @@ function createEstimator(options={}){
      else if(reverseCandidate&&(reverseCandidate.direction!==candidate||e.t-reverseCandidate.t>p.directionMs)){reverseCandidate={direction:candidate,t:e.t};direction=0;directionSource='gps-candidate';}
      else {const confirmed=directionSource==='confirmed'&&direction===candidate;direction=candidate;reverseCandidate=null;directionAt=e.t-e.age;directionSource=confirmed?'confirmed':'gps-displacement';}
      gpsActivityUntil=e.t-e.age+1500;activity='uncertain';
+     directionFix={...e};
     }
    }
-   gpsGate='';lastFix={...e};predicted=0;uncertainty=Math.max(1,e.accuracy);reason='';
+   gpsGate='';lastFix={...e};if(!directionFix)directionFix={...e};predicted=0;uncertainty=Math.max(1,e.accuracy);reason='';
    // accuracy is an operational horizontal bound, not a statistical sigma.
    if(finite(e.speed)&&e.speed>.8&&e.speed<p.maxSpeed&&activity==='stationary'){gpsActivityUntil=e.t-e.age+1500;activity='uncertain';}
-   pending=activity==='stationary'&&Math.abs(innovation)<Math.max(2,e.accuracy)?null:clamp(e.along,0,total);
+   // In step mode, GPS jitter inside its noise band must not undo recent steps.
+   pending=(mode==='steps'&&Math.abs(innovation)<=Math.max(p.stepMeters,e.accuracy))||(activity==='stationary'&&Math.abs(innovation)<Math.max(2,e.accuracy))?null:clamp(e.along,0,total);
    return snapshot(e.t);
   }
   if(e.type==='step'){steps++;if(mode!=='steps'&&mode!=='anchored')return snapshot(e.t);
@@ -90,12 +92,12 @@ function createEstimator(options={}){
  return {input,snapshot,params:p};
 }
 function enu(origin,p){const rad=Math.PI/180;return {x:(p.lng-origin.lng)*rad*6371000*Math.cos(origin.lat*rad),y:(p.lat-origin.lat)*rad*6371000};}
-function createProjector({origin,originAccuracy=0,axis=null,nodes=null,cumulative=null,total=16.38}){
+function createProjector({origin,originAccuracy=0,axis=null,radial=false,nodes=null,cumulative=null,total=16.38}){
  let segment=0,lastAlong=null;
  const points=nodes?.map(n=>enu(nodes[0],n));
- return {originAccuracy,setAxis(endpoint,accuracy){const v=enu(origin,endpoint),length=Math.hypot(v.x,v.y);if(length<Math.max(8,2*(accuracy+originAccuracy)))return false;axis={x:v.x/length,y:v.y/length};return true;},hasAxis:()=>!!axis||!!nodes,accept(p){if(nodes&&p){segment=p.segment;lastAlong=p.along;}},
+ return {originAccuracy,setAxis(endpoint,accuracy){const v=enu(origin,endpoint),length=Math.hypot(v.x,v.y);if(length<Math.max(8,2*(accuracy+originAccuracy)))return false;axis={x:v.x/length,y:v.y/length};return true;},hasAxis:()=>!!axis||!!nodes||radial,accept(p){if(nodes&&p){segment=p.segment;lastAlong=p.along;}},
  project(position,accuracy){
-  if(!nodes){if(!axis)return null;const v=enu(origin,position);return {along:v.x*axis.x+v.y*axis.y,cross:Math.abs(v.x*axis.y-v.y*axis.x),accuracy:accuracy+originAccuracy,tangentHeading:(Math.atan2(axis.x,axis.y)*180/Math.PI+360)%360};}
+  if(!nodes){const v=enu(origin,position);if(radial)return {along:Math.hypot(v.x,v.y),cross:0,accuracy:accuracy+originAccuracy,tangentHeading:null};if(!axis)return null;return {along:v.x*axis.x+v.y*axis.y,cross:Math.abs(v.x*axis.y-v.y*axis.x),accuracy:accuracy+originAccuracy,tangentHeading:(Math.atan2(axis.x,axis.y)*180/Math.PI+360)%360};}
   const v=enu(nodes[0],position),candidates=[];
   for(let i=0;i<points.length-1;i++){const a=points[i],b=points[i+1],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);if(!length)continue;const raw=((v.x-a.x)*dx+(v.y-a.y)*dy)/(length*length),f=clamp(raw,0,1),cross=Math.hypot(v.x-a.x-f*dx,v.y-a.y-f*dy),scale=(cumulative[i+1]-cumulative[i])/length;
    const along=cumulative[i]+raw*(cumulative[i+1]-cumulative[i]);candidates.push({segment:i,along,cross,accuracy:accuracy*Math.max(1,scale),tangentHeading:(Math.atan2(dx,dy)*180/Math.PI+360)%360,score:cross+(lastAlong===null?0:Math.abs(along-lastAlong)*.2)});}
