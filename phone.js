@@ -1,7 +1,6 @@
-import * as THREE from 'three';
-import {createFixedLook} from './phone-look.js?v=1.4.4';
+import {createFixedLook} from './phone-look.js?v=1.4.4-look2';
 const $=s=>document.querySelector(s);
-function createLegacyPhone({getState,setTravel,setView,lookQuaternion,recenterLook=()=>new THREE.Quaternion()}){
+function createLegacyPhone({getState,setTravel,setView,lookQuaternion}){
  let active=false,phase='idle',watch=null,token=0,origin=null,preparation=null,filter=null,timer=null,target=null,lastFix=0,lastStamp=-Infinity,lastAccuracy=null;
  let unsubscribeLook=null; let motion=false,motionToken=0,orientation=null,motionAt=0;const fixedLook=createFixedLook();
  const setStatus=(text)=>{$('#tracking-status').textContent=text;};
@@ -21,7 +20,7 @@ function createLegacyPhone({getState,setTravel,setView,lookQuaternion,recenterLo
  function onOrientation(e){if(!motion)return;const q=fixedLook.sample(e,screen.orientation?.angle??window.orientation??0,orientation??lookQuaternion());if(!q)return;orientation=q;motionAt=Date.now();$('#motion-status').textContent='Move o telemóvel para olhar à volta. Horizonte nivelado.';}
  addEventListener('orientationchange',()=>fixedLook.reanchor());
  screen.orientation?.addEventListener('change',()=>fixedLook.reanchor());
- $('#motion-toggle').onclick=toggleMotion;$('#recenter').onclick=()=>{const view=recenterLook();if(motion){orientation=fixedLook.recenter(view);motionAt=Date.now();}$('#motion-status').textContent='Vista recentrada na direção inicial.';};
+ $('#motion-toggle').onclick=toggleMotion;
  $('#gps-toggle').onclick=()=>{if(active){stop();return;}if(!getState().ready)return;if(!navigator.geolocation){setStatus('Este navegador não disponibiliza GPS.');return;}if(!window.isSecureContext){setStatus('Abre a ligação HTTPS para usar a localização.');return;}const id=++token;active=true;phase='preparing';target=null;lastStamp=-Infinity;preparation=TourGpsStart.createPreparation(Date.now());lock(true);$('#gps-toggle').textContent='Cancelar preparação';$('#gps-toggle').setAttribute('aria-pressed','true');setView('walk');prepUI(Date.now());watch=navigator.geolocation.watchPosition(p=>onFix(p,id),e=>{if(id!==token)return;stop(e.code===1?'Localização não permitida. Autoriza-a nas definições do Safari.':e.code===3?'O GPS demorou demasiado. Tenta novamente ao ar livre.':'Não foi possível obter localização. Tenta ao ar livre.');},{enableHighAccuracy:true,maximumAge:0,timeout:20000});timer=setInterval(()=>{prepUI(Date.now());if(phase==='walking'&&Date.now()-lastFix>10000){target=null;setStatus('Sem localização recente. A deslocação está suspensa.');}},1000);};
  $('#use-fix').onclick=()=>{const s=preparation?.snapshot(Date.now());if(s?.fallback)activate({lat:s.fallback.lat,lng:s.fallback.lng},s.fallback.accuracy);};
  $('#tracking-mode').onchange=()=>{$('#mode-description').textContent=$('#tracking-mode').value==='remote'?'P01 fica onde inicias. Afasta-te em linha reta para avançar e regressa para recuar.':'Usa as coordenadas do percurso real em Benfica. Começa junto ao P01.';};

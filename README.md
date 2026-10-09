@@ -1,4 +1,4 @@
-> **v1.4.3 — olhar com eixos fixos:** o horizonte mantém-se nivelado e a inclinação inicial do telemóvel não roda os eixos do olhar. «Recentrar» repõe imediatamente a direção inicial da tour, com ou sem sensores ligados. A leitura seguinte usa essa vista como referência. Testes automatizados cobrem diferentes inclinações, orientação do ecrã, passagem dos 360° e recentragem. Falta validar num iPhone real.
+> **v1.4.4 — olhar contínuo:** a câmara acompanha o vetor de visão do telemóvel, em vez de subtrair ângulos Euler instáveis perto da vertical. Junto ao eixo vertical, mantém o último heading válido sem limitar a inclinação. Os eixos permanecem nivelados e a mudança de orientação do ecrã preserva a vista. Testes automatizados cobrem movimentos contínuos. Falta validar num iPhone real.
 
 > **v1.4.2 — teste de fluidez:** preparação automática parado, GPS + atividade e GPS + passos. Ver [guião atual](GUIAO-GPS-v1.4.2.md).
 

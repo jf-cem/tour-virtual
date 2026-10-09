@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CEM Benfica · Tour Virtual v1.4.4 · piloto</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css?v=1.4.4"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script></head>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CEM Benfica · Tour Virtual v1.4.4 · piloto</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css?v=1.4.4-look2"><script type="importmap">{"imports":{"three":"./vendor/three.module.js","three/addons/":"./vendor/"}}</script></head>
 <body>
 <main id="viewport" aria-label="Espaço virtual CEM Benfica"></main>
 <header class="glass"><div class="brand"><span class="badge">CEM</span><div><strong>Benfica</strong><span>v1.4.4 · P01–P03</span></div></div><div class="header-actions"><button id="location-toggle" aria-expanded="false" aria-controls="tracking-options">Local do teste</button><button id="help" aria-expanded="false" aria-controls="help-panel">Como explorar</button></div></header>
@@ -17,7 +17,7 @@
 <section id="route-planner" class="control-section" aria-labelledby="planner-title" hidden><h2 id="planner-title">O teu percurso</h2><p id="planner-status" role="status">Desenha na planta o percurso que queres percorrer.</p><div class="planner-actions"><button id="draw-route" class="primary">Desenhar percurso</button><button id="undo-route" hidden>Desfazer ponto</button><button id="use-route" class="primary" hidden>Usar percurso</button><button id="cancel-route" hidden>Cancelar</button><button id="original-route" hidden>Voltar a P01–P03</button></div><p class="planner-note">O primeiro ponto é o início. Escolhe zonas transitáveis: o percurso não evita obstáculos.</p></section>
 <div class="phone-controls">
 <section class="control-section look-section" aria-labelledby="look-title"><h2 id="look-title">Olhar à volta</h2><div class="look-actions">
-<button id="motion-toggle" aria-pressed="false" disabled>Olhar com o telemóvel</button><button id="recenter" title="Recentrar o olhar">Recentrar</button>
+<button id="motion-toggle" aria-pressed="false" disabled>Olhar com o telemóvel</button>
 </div><p id="motion-status" role="status">Olhar por toque disponível.</p>
 
 </section>
@@ -31,5 +31,5 @@
 </div>
 </section>
 <nav id="direction-pad" class="glass" aria-label="Movimento livre" hidden><button data-direction="forward" aria-label="Andar em frente">↑</button><button data-direction="left" aria-label="Andar para a esquerda">←</button><button data-direction="back" aria-label="Andar para trás">↓</button><button data-direction="right" aria-label="Andar para a direita">→</button></nav>
-<script src="movement-core.js?v=1.4.4"></script><script src="sensor-service.js?v=1.4.4"></script><script src="geo.js"></script><script src="gps-start.js"></script><script src="tracking-core.js"></script><script src="panel.js?v=1.4.4"></script><script type="module" src="app.js?v=1.4.4"></script>
+<script src="movement-core.js?v=1.4.4-look2"></script><script src="sensor-service.js?v=1.4.4-look2"></script><script src="geo.js"></script><script src="gps-start.js"></script><script src="tracking-core.js"></script><script src="panel.js?v=1.4.4-look2"></script><script type="module" src="app.js?v=1.4.4-look2"></script>
 </body></html>
