@@ -4,37 +4,41 @@ const finite=Number.isFinite, clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 // Initial engineering hypotheses, NOT physical accuracy guarantees.
 const PARAMETERS=Object.freeze({stepMeters:.65,sensorGapMs:300,minStepMs:300,maxStepMs:1500,peak:1.05,release:.35,rotationLimit:240,stationaryMs:1800,directionMs:5000,gpsAgeMs:10000,maxWithoutFixMs:12000,maxPredictionMeters:6,maxUncertaintyMeters:12,correctionRate:.6,reanchorMeters:10,maxAccuracy:20,maxSpeed:3});
 function createDetector(params={}){
- const p={...PARAMETERS,...params};let last=null,gravity=9.81,mean=0,energy=0,armed=true,lastPeak=null,intervals=[],lastStep=-Infinity,steps=0,validAt=-Infinity,rate=0;
+ const p={...PARAMETERS,...params};let last=null,gravity=9.81,mean=0,energy=0,armed=true,lastPeak=null,intervals=[],lastStep=-Infinity,steps=0,validAt=-Infinity,rate=0,window=[],peakCount=0,rejection=null;
  return {add(s){
   const t=s.t,dt=last===null?0:(t-last)/1000;
   if(!finite(t)||last!==null&&t<=last)return {step:false,activity:'uncertain',steps};
   last=t;const a=s.acceleration,g=s.gravity;
   const vector=v=>v&&[v.x,v.y,v.z].every(finite);
   if(!vector(a)&&!vector(g)){intervals=[];return {step:false,activity:'uncertain',steps};}
-  if(!dt||dt*1000>p.sensorGapMs){mean=0;energy=0;armed=true;lastPeak=null;intervals=[];validAt=t;return {step:false,activity:'uncertain',steps};}
+  if(!dt||dt*1000>p.sensorGapMs){mean=0;energy=0;armed=true;lastPeak=null;intervals=[];window=[];validAt=t;return {step:false,activity:'uncertain',steps};}
   rate=rate?rate*.9+.1/dt:1/dt;validAt=t;
   const norm=v=>Math.hypot(v.x,v.y,v.z),alpha=1-Math.exp(-dt/.7);
   let raw;if(vector(g)){const magnitude=norm(g);gravity+=alpha*(magnitude-gravity);raw=magnitude-gravity;}else raw=norm(a);
   mean+=(1-Math.exp(-dt/1.5))*(raw-mean);const signal=raw-mean;
   energy+=(1-Math.exp(-dt/.4))*(signal*signal-energy);
+  // Step mode adapts to gentle walking with a handheld phone. Keep the
+  // activity-only detector's thresholds unchanged until field comparison.
+  let threshold=p.peak;
+  if(p.adaptiveSteps){window.push({t,signal});while(window.length&&t-window[0].t>2000)window.shift();const range=Math.max(...window.map(v=>v.signal))-Math.min(...window.map(v=>v.signal));threshold=clamp(range*.25,.18,p.peak);}
   const rotation=s.rotation,rot=rotation?Math.hypot(...['alpha','beta','gamma'].map(k=>finite(rotation[k])?rotation[k]:0)):0;
   let step=false;
-  if(signal<p.release)armed=true;
-  if(armed&&signal>p.peak){armed=false;const period=lastPeak===null?Infinity:t-lastPeak;lastPeak=t;
-   if(rot>p.rotationLimit||period<p.minStepMs||period>p.maxStepMs)intervals=[];
-   else {intervals.push(period);intervals=intervals.slice(-3);if(intervals.length>=2&&Math.max(...intervals)/Math.min(...intervals)<1.7){step=true;steps++;lastStep=t;}}
+  if(signal<(p.adaptiveSteps?threshold*.3:p.release))armed=true;
+  if(armed&&signal>threshold){armed=false;peakCount++;const period=lastPeak===null?Infinity:t-lastPeak;lastPeak=t;
+   if(rot>p.rotationLimit||period<p.minStepMs||period>p.maxStepMs){intervals=[];rejection=rot>p.rotationLimit?'rotation':period<p.minStepMs?'too-fast':'cadence-warmup';}
+   else {intervals.push(period);intervals=intervals.slice(-3);if(intervals.length>=2&&Math.max(...intervals)/Math.min(...intervals)<1.7){step=true;steps++;lastStep=t;rejection=null;}else rejection='cadence-unconfirmed';}
   }
-  return {step,steps,activity:t-lastStep<1600?'walking':energy<.12&&t-lastStep>p.stationaryMs?'stationary':'uncertain',energy,rate,rotation:rot,quality:rot>p.rotationLimit?'gesture':'usable'};
- },snapshot(t){return {steps,rate,activity:t-validAt>p.sensorGapMs?'uncertain':t-lastStep<1600?'walking':energy<.12?'stationary':'uncertain'};}};
+  return {step,steps,activity:t-lastStep<1600?'walking':energy<(p.adaptiveSteps ? .015 : .12)&&t-lastStep>p.stationaryMs?'stationary':'uncertain',energy,signal,threshold,peakCount,rejection,rate,rotation:rot,quality:rot>p.rotationLimit?'gesture':'usable'};
+ },snapshot(t){return {steps,rate,activity:t-validAt>p.sensorGapMs?'uncertain':t-lastStep<1600?'walking':energy<(p.adaptiveSteps ? .015 : .12)?'stationary':'uncertain'};}};
 }
 function createEstimator(options={}){
  const p={...PARAMETERS,...options.params},mode=options.mode||'steps',total=options.total??16.38;
- let x=0,direction=0,directionAt=-Infinity,directionSource='unknown',uncertainty=0,steps=0,predicted=0,correction=0,lastFix=null,directionFix=null,lastInput=-Infinity,lastTick=null,pending=null,activity='uncertain',sensorAt=-Infinity,reason='anchor-required',anchored=false,blocked=false,anchorAt=options.start??0,gpsGate='',reverseCandidate=null,gpsActivityUntil=-Infinity;
+ let x=0,direction=0,directionAt=-Infinity,directionSource='unknown',uncertainty=0,steps=0,predicted=0,correction=0,lastFix=null,directionFix=null,lastInput=-Infinity,lastTick=null,pending=null,activity='uncertain',sensorAt=-Infinity,reason='anchor-required',anchored=false,blocked=false,anchorAt=options.start??0,gpsGate='',reverseCandidate=null,gpsActivityUntil=-Infinity,lastAcceptedStep=-Infinity;
  const suspend=r=>{reason=r;pending=null;return snapshot(lastInput);};
  function directionValid(t){return t-directionAt<=p.directionMs||(mode==='steps'&&['confirmed','start-forward','gps-displacement'].includes(directionSource)&&lastFix&&t-lastFix.t+lastFix.age<=p.gpsAgeMs);}
  function snapshot(t){const age=lastFix?Math.max(0,t-lastFix.t+lastFix.age):null;return {alongMeters:x,direction:directionValid(t)?direction:0,directionSource:direction===0?directionSource:directionValid(t)?directionSource:'expired',uncertaintyMeters:uncertainty,confidenceLevel:uncertainty<=3?'operational-within-budget':'operational-uncertain',status:reason?'suspended':'tracking',sourceMode:mode,lastFixAgeMs:age,steps,predictedDistanceMeters:predicted,correctionMeters:correction,activity,reason,anchored};}
  function input(e){if(!finite(e.t)||e.t<lastInput)return snapshot(lastInput);lastInput=e.t;
-  if(e.type==='anchor'){x=clamp(e.along??0,0,total);uncertainty=e.uncertainty??0;anchored=true;blocked=false;anchorAt=e.t;gpsGate='';reverseCandidate=null;gpsActivityUntil=-Infinity;predicted=0;pending=null;lastFix=null;directionFix=null;lastTick=e.t;direction=0;reason='direction-required';return snapshot(e.t);}
+  if(e.type==='anchor'){x=clamp(e.along??0,0,total);uncertainty=e.uncertainty??0;anchored=true;blocked=false;anchorAt=e.t;gpsGate='';reverseCandidate=null;gpsActivityUntil=-Infinity;lastAcceptedStep=-Infinity;predicted=0;pending=null;lastFix=null;directionFix=null;lastTick=e.t;direction=0;reason='direction-required';return snapshot(e.t);}
   if(e.type==='direction'){if(!anchored)return suspend('anchor-required');direction=e.direction===-1?-1:e.direction===1?1:0;reverseCandidate=null;directionAt=e.t;directionSource=e.source==='start-forward'?'start-forward':'confirmed';reason=direction?'':'direction-required';return snapshot(e.t);}
   if(e.type==='pause'){blocked=true;pending=null;direction=0;return suspend('explicit-reanchor-required');}
   if(e.type==='activity'){activity=e.activity==='stationary'&&e.t<gpsActivityUntil?'uncertain':e.activity;sensorAt=e.t;return snapshot(e.t);}
@@ -47,7 +51,7 @@ function createEstimator(options={}){
    if(Math.abs(innovation)>p.reanchorMeters){blocked=true;pending=null;return suspend('explicit-reanchor-required');}
    if(blocked)return suspend('explicit-reanchor-required');
    // Informative displacement establishes travel direction; phone orientation never does.
-   if(directionFix&&(activity!=='stationary'||finite(e.speed)&&e.speed>.8&&e.speed<p.maxSpeed)){const delta=e.along-directionFix.along,gate=Math.max(1.5,(e.accuracy+directionFix.accuracy)*.5);
+   if(directionFix&&(mode==='steps'||activity!=='stationary'||finite(e.speed)&&e.speed>.8&&e.speed<p.maxSpeed)){const delta=e.along-directionFix.along,gate=Math.max(1.5,(e.accuracy+directionFix.accuracy)*.5);
     if(Math.abs(delta)>gate){const candidate=Math.sign(delta),expected=(e.tangentHeading+(candidate<0?180:0)+360)%360;
      const headingConflict=finite(e.heading)&&finite(e.speed)&&e.speed>=.8&&finite(e.tangentHeading)&&Math.abs(((e.heading-expected+540)%360)-180)>45;
      if(headingConflict){direction=0;reverseCandidate=null;directionSource='gps-heading-conflict';}
@@ -62,7 +66,7 @@ function createEstimator(options={}){
    // accuracy is an operational horizontal bound, not a statistical sigma.
    if(finite(e.speed)&&e.speed>.8&&e.speed<p.maxSpeed&&activity==='stationary'){gpsActivityUntil=e.t-e.age+1500;activity='uncertain';}
    // In step mode, GPS jitter inside its noise band must not undo recent steps.
-   pending=(mode==='steps'&&Math.abs(innovation)<=Math.max(p.stepMeters,e.accuracy))||(activity==='stationary'&&Math.abs(innovation)<Math.max(2,e.accuracy))?null:clamp(e.along,0,total);
+   pending=(mode==='steps'&&e.t-lastAcceptedStep<=p.maxStepMs*2&&Math.abs(innovation)<=Math.max(p.stepMeters,e.accuracy))||(activity==='stationary'&&Math.abs(innovation)<Math.max(2,e.accuracy))?null:clamp(e.along,0,total);
    return snapshot(e.t);
   }
   if(e.type==='step'){steps++;if(mode!=='steps'&&mode!=='anchored')return snapshot(e.t);
@@ -73,7 +77,7 @@ function createEstimator(options={}){
    const distance=p.stepMeters;
    const anchorAge=lastFix?e.t-lastFix.t+lastFix.age:e.t-anchorAt;
    if(predicted+distance>p.maxPredictionMeters||anchorAge>p.maxWithoutFixMs||uncertainty+distance*.3>p.maxUncertaintyMeters){pending=null;return suspend('prediction-budget-exceeded');}
-   x=clamp(x+direction*distance,0,total);if(pending!==null)pending=clamp(pending+direction*distance,0,total);predicted+=distance;uncertainty+=distance*.3;reason='';return snapshot(e.t);
+   x=clamp(x+direction*distance,0,total);if(pending!==null)pending=clamp(pending+direction*distance,0,total);predicted+=distance;uncertainty+=distance*.3;lastAcceptedStep=e.t;activity='walking';reason='';return snapshot(e.t);
   }
   if(e.type==='tick'){
    const dt=lastTick===null?0:clamp((e.t-lastTick)/1000,0,.25);lastTick=e.t;
@@ -107,6 +111,6 @@ function createProjector({origin,originAccuracy=0,axis=null,radial=false,nodes=n
  }};
 }
 function createRecorder(limit=24000){let events=[],enabled=false,truncated=false,meta={};return {start(m={}){events=[];enabled=true;truncated=false;meta=m;},stop(){enabled=false;},add(e){if(!enabled)return;if(events.length>=limit){enabled=false;truncated=true;return;}events.push(JSON.parse(JSON.stringify(e)));},data:()=>({schema:'cem-movement-1',meta,parameters:PARAMETERS,truncated,events}),enabled:()=>enabled};}
-function replay(events,options){const detector=createDetector(options?.params),estimator=createEstimator(options);return events.map(e=>{if(e.type==='motion'){const d=detector.add(e);estimator.input({type:'activity',t:e.t,activity:d.activity});if(d.step)estimator.input({type:'step',t:e.t});}else if(['anchor','direction','gps','tick','pause','activity','step'].includes(e.type))estimator.input(e);return estimator.snapshot(e.t);});}
+function replay(events,options){const params={...options?.params};if(options?.mode==='activity')params.adaptiveSteps=false;let detector=createDetector(params);const estimator=createEstimator(options);return events.map(e=>{let t=e.t;if(e.type==='motion'){if(options?.mode==='steps')t=finite(e.arrival)?e.arrival:e.t;if(options?.mode!=='steps'||t-e.t<=PARAMETERS.sensorGapMs){const d=detector.add(e);estimator.input({type:'activity',t,activity:d.activity});if(d.step)estimator.input({type:'step',t});}}else if(['anchor','direction','gps','tick','pause','activity','step'].includes(e.type)){if(e.type==='anchor')detector=createDetector(params);estimator.input(e);}return estimator.snapshot(t);});}
 const api={PARAMETERS,createDetector,createEstimator,createProjector,createRecorder,replay,enu};if(typeof module==='object'&&module.exports)module.exports=api;else root.CemMovement=api;
 })(typeof window==='undefined'?globalThis:window);

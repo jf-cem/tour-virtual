@@ -4,7 +4,7 @@ export function createPilot({getState,setTravel,setView,legacy}){
  const core=window.CemMovement,sensors=window.cemSensors,recorder=core.createRecorder();
  let active=false,session=0,phase='idle',preparation=null,estimator=null,detector=null,projector=null,latestFix=null,unsub=null,unGps=null,timer=null,output=null,shown=0,mode='steps',start=0,params={},lastPresentation=0,lastDetail=0;
  const baselineClick=$('#gps-toggle').onclick;
- let lastStepAt=null,stepSpeed=1.3;
+ let lastStepAt=null,stepSpeed=1.3,lastDetection=null;
  function presentationSpeed(){if(mode!=='steps')return 4;const lag=Math.abs((output?.alongMeters??shown)-shown);return Math.min(4,Math.max(.4,stepSpeed*1.15+Math.max(0,lag-(params.stepMeters??.65))*.8));}
  // Keep the actions beside the live status, outside the settings popover.
  const setup=document.createElement('div');setup.id='walking-setup';
@@ -24,7 +24,7 @@ export function createPilot({getState,setTravel,setView,legacy}){
  if(phase==='walking')$('#walking-feedback').textContent=`${output?.steps??0} passos detetados · ${(output?.alongMeters??0).toFixed(1)} m estimados${output?.reason==='prediction-budget-exceeded'?' · A aguardar GPS útil; não é preciso iniciar de novo se o sinal recuperar.':''}`;
   const t=performance.now();if(t-lastDetail>300){lastDetail=t;$('#movement-diagnostics').textContent=JSON.stringify(diagnostics(),null,2);}
  }
- function diagnostics(){return {experimental:true,mode,phase,sensors:sensors.diagnostics(),estimate:output,presentedMeters:shown,presentationLagMeters:output?output.alongMeters-shown:null,fps:getState().fps??null,assumedStepMeters:params.stepMeters,axisReady:projector?.hasAxis()??false,recording:recorder.enabled(),recordingTruncated:recorder.data().truncated};}
+ function diagnostics(){return {experimental:true,mode,phase,sensors:sensors.diagnostics(),detector:lastDetection,estimate:output,presentedMeters:shown,presentationLagMeters:output?output.alongMeters-shown:null,fps:getState().fps??null,assumedStepMeters:params.stepMeters,axisReady:projector?.hasAxis()??false,recording:recorder.enabled(),recordingTruncated:recorder.data().truncated};}
  function stop(message='Caminhada experimental parada. Reinicia para reancorar.'){
   if(!active)return;input({type:'pause',t:performance.now()});record({type:'mark',t:performance.now(),label:'session-stop'});active=false;session++;unsub?.();unGps?.();unsub=unGps=null;clearInterval(timer);timer=null;phase='idle';lock(false);document.getElementById("use-fix").hidden=true;$('#gps-toggle').textContent='Iniciar caminhada';$('#gps-toggle').setAttribute('aria-pressed','false');for(const id of ['confirm-anchor','axis-end','return-origin','direction-controls'])$('#'+id).hidden=true;$('#walking-feedback').textContent='';$('#tracking-status').textContent=message;recorder.stop();$('#movement-diagnostics').textContent=JSON.stringify(diagnostics(),null,2);
  }
@@ -42,12 +42,19 @@ export function createPilot({getState,setTravel,setView,legacy}){
   if(phase==='walking'&&projector?.hasAxis()){const projected=projector.project(f,f.accuracy);if(projected){input({type:'gps',t:f.t,stamp:f.stamp,age:f.age,...projected,speed:f.speed,heading:f.heading});if(!output.reason)projector.accept(projected);}}ui();
  }
  async function begin(){
-  if(!getState().ready)return;if(!window.isSecureContext){$('#tracking-status').textContent='Abre o URL HTTPS para usar os sensores.';return;}const id=++session;active=true;phase='preparing';mode=$('#fusion-mode').value;start=performance.now();preparation=TourGpsStart.createPreparation(Date.now());latestFix=null;shown=0;lastPresentation=0;params={stepMeters:Math.max(.2,Math.min(1.5,Number($('#step-length').value)||.65)),correctionRate:mode==='activity'?2:.6};estimator=core.createEstimator({mode,total:getState().total,start,params});detector=core.createDetector(params);output=estimator.snapshot(start);
+  if(!getState().ready)return;if(!window.isSecureContext){$('#tracking-status').textContent='Abre o URL HTTPS para usar os sensores.';return;}const id=++session;active=true;phase='preparing';mode=$('#fusion-mode').value;start=performance.now();preparation=TourGpsStart.createPreparation(Date.now());latestFix=null;shown=0;lastPresentation=0;params={adaptiveSteps:mode==='steps',stepMeters:Math.max(.2,Math.min(1.5,Number($('#step-length').value)||.65)),correctionRate:mode==='activity'?2:.6};estimator=core.createEstimator({mode,total:getState().total,start,params});detector=core.createDetector(params);output=estimator.snapshot(start);
   if($('#record-session').checked)recorder.start({startedCivil:Date.now(),startedMonotonic:start,userAgent:navigator.userAgent,mode,total:getState().total,start,params,location:$('#tracking-mode').value,geoNodes:getState().gps,virtualCumulative:getState().cumulative});
   // Permission calls before awaiting, while the click's user activation is current.
   const permission=sensors.request(['motion','orientation']);lock(true);$('#use-fix').hidden=true;$('#gps-toggle').textContent='Cancelar preparação';$('#gps-toggle').setAttribute('aria-pressed','true');setView('walk');
-  lastStepAt=null;stepSpeed=1.3;
-  unsub=sensors.subscribe('walking',['motion','orientation'],s=>{if(id!==session||!active)return;record(s);if(s.type==='motion'){const d=detector.add(s);record({type:'detection',t:s.t,processedAt:performance.now(),...d});input({type:'activity',t:s.t,activity:d.activity});if(d.step){if(lastStepAt!==null&&s.t-lastStepAt<=core.PARAMETERS.maxStepMs)stepSpeed=params.stepMeters*1000/(s.t-lastStepAt);lastStepAt=s.t;input({type:'step',t:s.t});}}});
+  lastStepAt=null;stepSpeed=1.3;lastDetection=null;
+  unsub=sensors.subscribe('walking',['motion','orientation'],s=>{if(id!==session||!active)return;record(s);if(s.type==='motion'){
+   const processedAt=performance.now();if(mode==='steps'&&processedAt-s.t>core.PARAMETERS.sensorGapMs)return;
+   const d=detector.add(s);lastDetection={...d,eventLagMs:processedAt-s.t};record({type:'detection',t:s.t,processedAt,...d});
+   // Cadence uses acquisition time; estimator mutations use processing order.
+   // A 50 ms tick may already be newer than a sensor event delivered late.
+   const t=mode==='steps'?processedAt:s.t;input({type:'activity',t,activity:d.activity});
+   if(d.step){if(lastStepAt!==null&&s.t-lastStepAt<=core.PARAMETERS.maxStepMs)stepSpeed=params.stepMeters*1000/(s.t-lastStepAt);lastStepAt=s.t;input({type:'step',t});}
+  }});
   unGps=sensors.gps('walking',f=>onFix(f,id),e=>{if(id!==session)return;stop(e.code===1?'Localização recusada. Autoriza a localização ou usa a exploração manual.':'GPS indisponível. Tenta ao ar livre ou usa a exploração manual.');});
   timer=setInterval(()=>{if(id!==session||!active)return;prepare();if(phase==='walking')input({type:'tick',t:performance.now()});ui();},50);ui();
   const result=await permission;if(id!==session||!active)return;record({type:'permissions',t:performance.now(),result});ui();

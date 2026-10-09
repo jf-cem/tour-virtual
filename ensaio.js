@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createPhone} from './phone.js?v=1.4.3';
+import {createPhone} from './phone.js?v=1.4.4';
 const route=await(await fetch('./route.json')).json(),points=route.stops.map(s=>new THREE.Vector3(...s.position)),segments=points.slice(1).map((p,i)=>p.distanceTo(points[i])),total=segments.reduce((a,b)=>a+b,0),cumulative=[0];for(const s of segments)cumulative.push(cumulative.at(-1)+s);
 let shown=0,look=new THREE.Quaternion(),last=performance.now();const phone=createPhone({getState:()=>({ready:true,total,gps:route.gps,cumulative}),setTravel:value=>shown=value,setView:()=>{},lookQuaternion:()=>look.clone(),recenterLook:()=>{look=new THREE.Quaternion();return look.clone();}});
 for(const id of ['motion-toggle','gps-toggle'])document.getElementById(id).disabled=false;
