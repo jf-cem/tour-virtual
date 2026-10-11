@@ -1,0 +1,410 @@
+[
+  {
+    "id": "P01",
+    "label": "P01 · referência",
+    "position": [
+      0,
+      3,
+      0
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ],
+    "reference": "P01"
+  },
+  {
+    "id": "P02",
+    "label": "P02 · referência",
+    "position": [
+      -6.51441156,
+      3,
+      0.51479059
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ],
+    "reference": "P02"
+  },
+  {
+    "id": "P03",
+    "label": "P03 · referência",
+    "position": [
+      -16.25174303,
+      3,
+      -0.94249372
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ],
+    "reference": "P03"
+  },
+  {
+    "id": "P03-back",
+    "label": "P03 · trás",
+    "position": [
+      -16.25174303,
+      3,
+      -0.94249372
+    ],
+    "direction": [
+      1,
+      -0.06,
+      0
+    ]
+  },
+  {
+    "id": "P03-left",
+    "label": "P03 · vegetação lateral",
+    "position": [
+      -16.25174303,
+      3,
+      -0.94249372
+    ],
+    "direction": [
+      -0.3,
+      -0.03,
+      1
+    ]
+  },
+  {
+    "id": "P03-right",
+    "label": "P03 · banco / MUPI",
+    "position": [
+      -16.25174303,
+      3,
+      -0.94249372
+    ],
+    "direction": [
+      -0.4,
+      -0.05,
+      -1
+    ]
+  },
+  {
+    "id": "ground",
+    "label": "P02 · chão rasante",
+    "position": [
+      -8,
+      1.85,
+      0
+    ],
+    "direction": [
+      -1,
+      -0.12,
+      0
+    ]
+  },
+  {
+    "id": "P01-P02",
+    "label": "P01–P02 · intermédia",
+    "position": [
+      -3.25720578,
+      3,
+      0.2573953
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ]
+  },
+  {
+    "id": "P02-P03",
+    "label": "P02–P03 · intermédia",
+    "position": [
+      -11.3830773,
+      3,
+      -0.21385157
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ]
+  },
+  {
+    "id": "P06",
+    "label": "P06 · regressão",
+    "position": [
+      -37.05024271,
+      3,
+      -0.24411074
+    ],
+    "direction": [
+      -1,
+      -0.06,
+      0
+    ]
+  },
+  {
+    "id": "P07",
+    "label": "P07 · regressão",
+    "position": [
+      -40.74724,
+      3,
+      -5.71574
+    ],
+    "direction": [
+      -1,
+      -0.075,
+      0
+    ]
+  },
+  {
+    "id": "P08",
+    "label": "P08 · regressão",
+    "position": [
+      -50.09338654,
+      2.90156514,
+      0.29141346
+    ],
+    "direction": [
+      -1,
+      -0.05,
+      0
+    ]
+  },
+  {
+    "id": "P09",
+    "label": "P09 · geometria D5 diferente",
+    "position": [
+      -46.25804634,
+      2.8,
+      0.55395935
+    ],
+    "direction": [
+      -1,
+      -0.05,
+      0
+    ]
+  },
+  {
+    "id": "interior",
+    "label": "Interior real · vista adicional",
+    "position": [
+      -53.6,
+      2.85,
+      -2.3
+    ],
+    "direction": [
+      0.9,
+      -0.15,
+      0.3
+    ]
+  },
+  {
+    "id": "rejeitada-aprox",
+    "label": "Vista rejeitada · reconstrução aproximada",
+    "position": [
+      -12.8,
+      3,
+      1.1
+    ],
+    "direction": [
+      -1,
+      -0.12,
+      0.7
+    ]
+  },
+  {
+    "id": "mupi",
+    "label": "MUPI · acabamento",
+    "position": [
+      -12.2,
+      2.7,
+      3.5
+    ],
+    "direction": [
+      -1,
+      -0.1,
+      -0.354
+    ],
+    "fov": 55
+  },
+  {
+    "id": "arbusto",
+    "label": "Arbusto · folhas / ramos",
+    "position": [
+      -15.8,
+      2.5,
+      2.2
+    ],
+    "direction": [
+      -0.3,
+      -0.6,
+      1.3
+    ],
+    "fov": 55
+  },
+  {
+    "id": "relva",
+    "label": "Relva · altura pedonal",
+    "position": [
+      -15,
+      3.1,
+      2
+    ],
+    "direction": [
+      -0.5,
+      -0.75,
+      0.6
+    ],
+    "fov": 55
+  },
+  {
+    "id": "composicao",
+    "label": "P03 · composição demonstrativa",
+    "position": [
+      -16.8,
+      3,
+      1
+    ],
+    "direction": [
+      0.6,
+      -0.2,
+      1
+    ],
+    "fov": 72
+  },
+  {
+    "fov": 60,
+    "direction": [
+      -5.5,
+      1.2,
+      3.9
+    ],
+    "position": [
+      -11.7,
+      3,
+      1.4
+    ],
+    "label": "Árvore inteira",
+    "id": "arvore"
+  },
+  {
+    "fov": 72,
+    "direction": [
+      -0.4,
+      2.15,
+      2.1
+    ],
+    "position": [
+      -16.8,
+      3,
+      3
+    ],
+    "label": "Copa por baixo",
+    "id": "copa-baixo"
+  },
+  {
+    "fov": 55,
+    "direction": [
+      1.9,
+      -0.65,
+      0.7
+    ],
+    "position": [
+      -18,
+      2.5,
+      2.8
+    ],
+    "label": "Arbusto de lado",
+    "id": "arbusto-lado"
+  },
+  {
+    "fov": 55,
+    "direction": [
+      -0.35,
+      1.25,
+      2.5
+    ],
+    "position": [
+      -17.2,
+      3.8,
+      2.4
+    ],
+    "label": "Folhagem: sol e sombra",
+    "id": "folhas-sol"
+  },
+  {
+    "fov": 72,
+    "direction": [
+      -2.74,
+      1.2,
+      -3.6
+    ],
+    "label": "P01 · copa completa",
+    "id": "P01-arvore",
+    "position": [
+      1.8,
+      3,
+      -0.2
+    ]
+  },
+  {
+    "fov": 72,
+    "direction": [
+      -2.3,
+      1,
+      4
+    ],
+    "label": "P02 · copa completa",
+    "id": "P02-arvore",
+    "position": [
+      -3.8,
+      3,
+      0.5
+    ]
+  },
+  {
+    "fov": 55,
+    "direction": [
+      0,
+      -0.55,
+      -2
+    ],
+    "label": "P02 · arbusto antes negro",
+    "id": "P02-arbusto",
+    "position": [
+      -12,
+      2.3,
+      -1.8
+    ]
+  },
+  {
+    "fov": 72,
+    "direction": [
+      -3,
+      1,
+      4.1
+    ],
+    "label": "Fim de P03 · árvore e arbustos",
+    "id": "P03-fim",
+    "position": [
+      -23.5,
+      3,
+      0.5
+    ]
+  },
+  {
+    "id": "P02-arbusto-lado",
+    "label": "P02 · arbusto de lado",
+    "position": [
+      -10.3,
+      2.2,
+      -3.8
+    ],
+    "direction": [
+      -1.7,
+      -0.45,
+      0
+    ],
+    "fov": 55
+  }
+]
