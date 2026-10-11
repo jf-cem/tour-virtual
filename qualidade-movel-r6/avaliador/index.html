@@ -1,0 +1,20 @@
+<!doctype html><html lang="pt"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,"><title>CeM · comparação gráfica</title>
+<style>body{margin:0;background:#c6deeb;font:14px system-ui;color:#172f38}canvas{display:block;touch-action:none}#panel{position:fixed;top:12px;left:12px;max-width:calc(100vw - 48px);background:#fffef4ee;border-radius:12px;padding:12px;box-shadow:0 4px 24px #0002}button,select,input{font:inherit;padding:7px;margin:3px;border:1px solid #acb6b8;border-radius:6px;background:white}#status{max-width:430px;font-size:12px;margin:6px;white-space:pre-line}details{max-width:460px}#hint{position:fixed;bottom:12px;left:12px;background:#fffddd;padding:8px;border-radius:6px}#pad{position:fixed;right:12px;bottom:12px;display:grid;grid-template-columns:repeat(3,45px)}#pad button{height:44px}#notice{color:#a43a20}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<div id="panel"><b>CeM · ensaio gráfico P01–P12</b><br>
+<select id="asset"><option value="r5-mixed">r5 · antes da casa D5</option><option value="pilot-mixed" selected>r6 · P10–P12 casa e MUPIs</option></select>
+<select id="view"></select><button id="reference">D5</button><br>
+<button id="walk">▶ Caminhada repetível</button><button id="reset">Repor vista</button>
+<details><summary>Cartazes e QR</summary><p><a href="graficos/cartaz-azul.png" target="_blank" rel="noopener">Cartaz azul</a> · <a href="graficos/cartaz-energia.png" target="_blank" rel="noopener">Cartaz energia</a> · <a href="graficos/QR-original.png" target="_blank" rel="noopener">QR da praça</a></p></details><details><summary>Condições e medição</summary>
+<label>Resolução <select id="dpr"><option>1</option><option selected>1.25</option><option>1.5</option></select> ×</label>
+<label><input type="checkbox" id="detail" checked>Microtextura piloto</label><br>
+<label>Aparelho / iOS / browser <input id="device" placeholder="Preencher no telefone"></label><br>
+<label>Rede / cache / condições <input id="network" placeholder="Wi-Fi, cache fria, etc."></label><br>
+<button id="measure">Iniciar medição</button><button id="export">Guardar relatório JSON</button><button id="record">Gravar caminhada</button>
+<p>Arraste para olhar; WASD ou setas para andar. Cinco arranques e dez minutos devem ser verificados no iPhone. As câmaras de referência conservam a altura original; a caminhada usa 1,65 m acima do piso. P09 fica fora do pavilhão importado.</p>
+</details><div id="status">A carregar…</div><div id="notice"></div></div>
+<div id="hint">Arraste para olhar · WASD / setas para andar</div>
+<div id="pad"><span></span><button data-key="w">↑</button><span></span><button data-key="a">←</button><button data-key="s">↓</button><button data-key="d">→</button></div>
+<script type="module" src="./app.js"></script></html>
+
+

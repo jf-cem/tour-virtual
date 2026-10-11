@@ -1,0 +1,16 @@
+{
+  "version": "CeM-quality-r1",
+  "threeRevision": "180",
+  "fov": 72,
+  "background": "#c6deeb",
+  "fog": [100,240],
+  "exposure": 1.3,
+  "toneMapping": "ACESFilmicToneMapping",
+  "outputColorSpace": "SRGBColorSpace",
+  "hemisphere": ["#e8f4ff","#7a8168",2.4],
+  "sun": {"color":"#fff6df","intensity":2.5,"position":[-30,80,35]},
+  "anisotropy": 4,
+  "dynamicShadows": false,
+  "postProcessing": false,
+  "note": "Fixed presentation from the target Three r180 tour. Baked/unlit does not receive the PBR lights. Original graphics set toneMapped=false in all comparison variants. No live sensors."
+}
