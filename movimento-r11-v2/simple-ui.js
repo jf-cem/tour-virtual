@@ -36,7 +36,9 @@ function render(){
  const exportText=compact?'Registo':'Descarregar registo do teste';if(originals['spatial-export'].textContent!==exportText)originals['spatial-export'].textContent=exportText;
  el('panel-toggle').setAttribute('aria-label',compact?'Mostrar opções':'Recolher opções');
  el('simple-setup').hidden=walking;el('simple-help').hidden=walking;el('simple-advanced').hidden=walking;
- const combined=originals['spatial-mode'].value==='slam-gps';el('simple-place').hidden=!combined;el('gps-help').hidden=!combined;
+ const combined=originals['spatial-mode'].value==='slam-gps';
+ originals['spatial-place'].value='relative';originals['spatial-start'].value='P01';
+ el('simple-place').hidden=true;el('simple-start').hidden=true;el('gps-help').hidden=!combined;
  document.querySelectorAll('[data-walk]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.walk===originals['spatial-mode'].value)));
  document.querySelectorAll('[data-place]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.place===originals['spatial-place'].value)));
  el('simple-export').hidden=originals['spatial-export'].disabled;
