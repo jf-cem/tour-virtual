@@ -1,5 +1,5 @@
 import {loadR11} from '../movimento-r11-v2/r11/load.js';
-import {createSpatial} from './spatial-xr8.js?v=outdoor1';
+import {createSpatial} from './spatial-xr8.js?v=smooth2';
 import * as THREE from 'three';
 import {GLTFLoader} from '../movimento-r11-v2/vendor/GLTFLoader.js';
 import {createPhone} from '../movimento-r11-v2/phone.js?v=1.4.4';

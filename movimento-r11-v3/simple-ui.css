@@ -23,11 +23,14 @@ body.spatial-active #spatial-controls label{display:flex!important}body.spatial-
 .controls #spatial-resume{min-height:48px;margin:0 14px 14px;padding:10px 14px;background:#17674e;color:white;border-radius:11px;font-size:16px}
 .controls.minimized #spatial-resume{min-height:38px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap}
 .controls #spatial-toggle[hidden],.controls #spatial-resume[hidden],#simple-legacy[hidden],#direction-pad{display:none!important}
-#camera-guide{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));width:162px;z-index:150;padding:8px;border-radius:14px;background:#f1f7f2f5;color:#193d2b;box-shadow:0 3px 18px #0003;pointer-events:none;font-size:12px}
+#camera-guide{position:fixed;right:12px;bottom:max(12px,env(safe-area-inset-bottom));width:110px;z-index:150;padding:6px;border-radius:11px;background:#f1f7f2f5;color:#193d2b;box-shadow:0 3px 18px #0003;pointer-events:none;font-size:11px}
 /* Keep the XR acquisition canvas sized even when its preview is not visible. */
-#camera-guide[hidden]{display:block!important;visibility:hidden}#camera-guide strong{display:block;margin-bottom:6px;font-size:12px}
-#camera-preview{width:144px;height:min(168px,23dvh);overflow:hidden;border-radius:8px;background:#274537}
+#camera-guide[hidden]{display:block!important;visibility:hidden}#camera-guide strong{display:block;margin-bottom:4px;font-size:11px}
+#camera-preview{width:96px;height:min(108px,19dvh);overflow:hidden;border-radius:6px;background:#274537}
 #camera-preview canvas{display:block;width:100%!important;height:100%!important;position:static!important}
-#camera-hint{margin:7px 0 0;line-height:1.35;font-size:12px;color:inherit}
-#camera-guide.hint-only{width:min(240px,calc(100vw - 24px))}#camera-guide.hint-only strong{display:none}#camera-guide.hint-only #camera-preview{position:absolute;left:-10000px}#camera-guide.hint-only #camera-hint{margin:0}
+#camera-hint{margin:5px 0 0;line-height:1.3;font-size:11px;color:inherit}
+#camera-guide.hint-only{width:min(180px,calc(100vw - 24px))}#camera-guide.hint-only strong{display:none}#camera-guide.hint-only #camera-preview{position:absolute;left:-10000px}#camera-guide.hint-only #camera-hint{margin:0}
 #camera-guide[data-quality=bright],#camera-guide[data-quality=dark],#camera-guide[data-quality=low-detail]{border:1px solid #9f742b}
+body .coaching-overlay-animation{width:min(58vmin,220px)}body .coaching-overlay-prompt-status{font-size:15px;max-width:240px}
+#recalibration-notice{position:fixed;left:12px;width:min(232px,calc(100vw - 146px));bottom:max(12px,env(safe-area-inset-bottom));margin:0;padding:10px;border-radius:11px;background:#f1f7f2f5;color:#193d2b;z-index:160;box-shadow:0 3px 18px #0003;pointer-events:none;font-size:12px;line-height:1.35}
+#recalibration-notice strong{display:block;font-size:14px;margin-bottom:3px}#recalibration-notice span{display:block}#recalibration-notice[hidden]{display:none!important}

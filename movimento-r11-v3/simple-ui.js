@@ -19,7 +19,7 @@ const friendly=document.createElement('p');friendly.id='walk-message';friendly.s
 const controls=document.querySelector('.controls');controls.append(friendly,originals['spatial-toggle'],el('simple-export'));
 let walking=false;
 function render(){
- const button=originals['spatial-toggle'],text=originals['spatial-status'].textContent;walking=button.getAttribute('aria-pressed')==='true';
+ const button=originals['spatial-toggle'],text=originals['spatial-status'].textContent;walking=button.getAttribute('aria-pressed')==='true'||document.body.dataset.walkPhase==='suspended';
  let message='Quando estiveres pronto, toca em Começar caminhada.',state='Pronto para começar';
  if(button.disabled){state='A carregar a visita…';message='A preparar o espaço. Aguarda um momento.';}
  else if(walking){state='A preparar a caminhada';message='Aponta para chão e fachadas com detalhes. Evita o céu e move suavemente o telemóvel para a frente e para trás.';if(document.body.dataset.walkPhase==='walking'){state='Caminhada em curso';message='Podes caminhar, parar, recuar e olhar à volta.';}}
@@ -28,7 +28,7 @@ function render(){
  else if(/terminado/i.test(text)){state='Caminhada terminada';message='Podes explorar com o dedo ou começar outra caminhada.';}
  else if(/ainda está a carregar/.test(text)){state='A preparar o movimento';message='Aguarda um momento e toca novamente em Começar caminhada.';}
  if(el('walk-state').textContent!==state)el('walk-state').textContent=state;if(friendly.textContent!==message)friendly.textContent=message;
- const phase=document.body.dataset.walkPhase;if(phase==='recovering'){state='A recuperar o movimento';message='Para um momento e aponta para uma zona com detalhes. A tua posição está guardada.';}if(phase==='recalibrate'){state='Continuar a caminhada';message='A tua posição está guardada. Fica no mesmo sítio e toca em Recalibrar.';}if(el('walk-state').textContent!==state)el('walk-state').textContent=state;if(friendly.textContent!==message)friendly.textContent=message;const compact=el('controls-body').hidden;
+ const phase=document.body.dataset.walkPhase;if(phase==='recovering'){state='A recuperar o movimento';message='Para um momento e aponta para uma zona com detalhes. A tua posição está guardada.';}if(phase==='recalibrating'){state='Recalibra no local';message='Fica no mesmo sítio e move suavemente o telemóvel. Aguarda antes de continuar a andar.';}if(phase==='suspended'){state='Movimento em pausa';message='O movimento retoma ao voltares à visita.';}if(el('walk-state').textContent!==state)el('walk-state').textContent=state;if(friendly.textContent!==message)friendly.textContent=message;const compact=el('controls-body').hidden;
  const label=compact?(walking?'Terminar':'Começar'):(walking?'Terminar caminhada':'Começar caminhada');if(button.textContent!==label)button.textContent=label;
  const resume=el('spatial-resume');if(resume){const parent=compact?head:controls;if(resume.parentNode!==parent)parent.append(resume);resume.textContent=compact?'Continuar':'Recalibrar e continuar daqui';button.hidden=phase==='recalibrate';}if(compact){if(button.parentNode!==head)head.insertBefore(button,el('panel-toggle'));if(el('simple-export').parentNode!==head)head.insertBefore(el('simple-export'),el('panel-toggle'));}
  else{if(button.parentNode!==controls)controls.insertBefore(button,el('simple-export').parentNode===controls?el('simple-export'):null);if(el('simple-export').parentNode!==controls)controls.append(el('simple-export'));}
