@@ -20,3 +20,6 @@ body.spatial-active #spatial-controls label{display:flex!important}body.spatial-
 .controls.minimized #panel-toggle{min-width:38px;min-height:40px;padding:6px;font-size:18px}
 .controls.minimized #spatial-toggle{display:block;width:auto;min-height:38px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;border-radius:9px}
 .controls.minimized #simple-export{padding:0;flex:none}.controls.minimized #spatial-export{width:auto;min-height:38px;padding:8px 10px;font-size:13px;margin:0}
+.controls #spatial-resume{min-height:48px;margin:0 14px 14px;padding:10px 14px;background:#17674e;color:white;border-radius:11px;font-size:16px}
+.controls.minimized #spatial-resume{min-height:38px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap}
+.controls #spatial-toggle[hidden],.controls #spatial-resume[hidden],#simple-legacy[hidden],#direction-pad{display:none!important}
