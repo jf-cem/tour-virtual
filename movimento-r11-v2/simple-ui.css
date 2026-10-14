@@ -13,3 +13,10 @@ header[hidden],.context,.progress-summary,#reset,#compact-status{display:none!im
 #simple-legacy #tracking-options{position:static;width:auto;max-height:none;padding:12px;box-shadow:none}#simple-legacy .view-switch{position:static;display:flex;flex-wrap:wrap;margin:12px 0}#simple-legacy .phone-controls{margin:12px 0}#simple-legacy #manual-controls{display:block}
 body.spatial-active #spatial-controls label{display:flex!important}body.spatial-active #simple-record{display:none!important}body.spatial-active .controls{z-index:100}body.spatial-active #spatial-controls>p{display:none}body.spatial-active #controls-body{padding:0}.controls.minimized{width:min(400px,calc(100vw - 24px))}
 @media(max-height:500px){.controls.glass{max-height:calc(100dvh - 20px)}.controls #controls-body{max-height:45dvh;overflow:auto}}
+/* Recolhido: uma barra, sem o cartão de mensagem nem botões empilhados. */
+.controls.glass.minimized{width:auto;max-width:calc(100vw - 24px);border-radius:14px;overflow:hidden}
+.controls.glass.minimized .progress-head{padding:4px 6px 4px 12px;gap:7px;border:0;min-height:44px;flex-wrap:nowrap}
+.controls.minimized .simple-title{flex:1;min-width:0}.controls.minimized .simple-title strong{font-size:14px;white-space:nowrap}.controls.minimized #walk-state,.controls.minimized #walk-message,.controls.minimized #panel-toggle-label{display:none!important}
+.controls.minimized #panel-toggle{min-width:38px;min-height:40px;padding:6px;font-size:18px}
+.controls.minimized #spatial-toggle{display:block;width:auto;min-height:38px;margin:0;padding:8px 12px;font-size:14px;white-space:nowrap;border-radius:9px}
+.controls.minimized #simple-export{padding:0;flex:none}.controls.minimized #spatial-export{width:auto;min-height:38px;padding:8px 10px;font-size:13px;margin:0}
