@@ -16,7 +16,7 @@ export function createSpatial({onStart,onPose,onStop,isReady}){
   const XR8=window.XR8;
   if(!isSecureContext){status.textContent='Abre a ligação HTTPS para usar a câmara.';return;}
   if(!XR8?.XrController){status.textContent='O motor espacial ainda está a carregar. Aguarda e toca novamente.';return;}
-  const token=++run;active=true;const mode=document.querySelector('#spatial-mode').value;recording=document.querySelector('#spatial-record').checked;events=[];document.querySelector('#spatial-mode').disabled=true;document.querySelector('#spatial-place').disabled=true;gpsEngine=null;gpsFault=null;sessionMeta={mode,place:document.querySelector('#spatial-place').value,start:document.querySelector('#spatial-start').value};rawSlam=null;lastMoving=performance.now();lastRecorded=0;button.textContent='Cancelar movimento espacial';button.setAttribute('aria-pressed','true');
+  const token=++run;active=true;const mode=document.querySelector('#spatial-mode').value;recording=document.querySelector('#spatial-record').checked;events=[];document.querySelector('#spatial-mode').disabled=true;document.querySelector('#spatial-place').disabled=true;gpsEngine=null;gpsFault=null;sessionMeta={truncated:false,mode,place:document.querySelector('#spatial-place').value,start:document.querySelector('#spatial-start').value};rawSlam=null;lastMoving=performance.now();lastRecorded=0;button.textContent='Cancelar movimento espacial';button.setAttribute('aria-pressed','true');
   const base=onStart();
   if(mode==='slam-gps'){
    gpsEngine=createGpsCorrection({mode:document.querySelector('#spatial-place').value,route:window.spatialGeoRoute});
@@ -54,7 +54,7 @@ export function createSpatial({onStart,onPose,onStop,isReady}){
      const position=base.position.clone().add(delta);
      rawSlam={x:position.x,z:position.z};
      if(gpsEngine){const corrected=gpsEngine.update(rawSlam,dt,Date.now(),t-lastMoving<500);position.x=corrected.x;position.z=corrected.z;const d=gpsEngine.diagnostics();document.querySelector('#spatial-gps-status').textContent=gpsFault||((d.accuracy===null?'GPS a aguardar':('GPS ±'+d.accuracy.toFixed(1)+' m'))+' · '+d.reason+' · correção '+d.correctionMetres.toFixed(2)+' m');}
-     if(recording&&t-lastRecorded>200){lastRecorded=t;if(events.length<20000)events.push({type:'pose',t,rawSlam:{...rawSlam},presented:position.toArray(),gps:gpsEngine?.diagnostics()??null});else {recording=false;document.querySelector('#spatial-gps-status').textContent+=' · Registo cheio';}}
+     if(recording&&t-lastRecorded>200){lastRecorded=t;if(events.length<20000)events.push({type:'pose',t,rawSlam:{...rawSlam},presented:position.toArray(),gps:gpsEngine?.diagnostics()??null});else {recording=false;sessionMeta.truncated=true;document.querySelector('#spatial-gps-status').textContent+=' · Registo cheio';}}
      poseValue={position,quaternion:rotation.clone().multiply(q)};onPose(poseValue);
      if(t-ui>200){ui=t;status.textContent=`${mode==='slam-gps'?'SLAM + GPS':'SLAM'} · ${delta.length().toFixed(2)} m desde o início · escala absoluta experimental`;}
     }
@@ -68,4 +68,5 @@ export function createSpatial({onStart,onPose,onStop,isReady}){
  document.querySelector('#spatial-export').onclick=()=>{if(!events.length)return;const url=URL.createObjectURL(new Blob([JSON.stringify({schema:'cem-slam-gps-v2',events,...sessionMeta,exportedAt:new Date().toISOString()})],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='cem-slam-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  return {active:()=>active,stop,pose:()=>poseValue};
 }
+
 

@@ -9,7 +9,7 @@ export function createGpsCorrection({mode='relative',route}){
  const siteAngle=Math.atan2(virtual.z,virtual.x)-Math.atan2(physical.z,physical.x);
  const rotate=(p,r)=>({x:p.x*Math.cos(r)-p.z*Math.sin(r),z:p.x*Math.sin(r)+p.z*Math.cos(r)});
  function gps(g,slam,now){
-  if(!slam)return;
+  if(!slam)return;accuracy=Number.isFinite(g.accuracy)&&g.accuracy>=0?g.accuracy:null;
   if(![g.lat,g.lng,g.accuracy,g.stamp].every(Number.isFinite)||Math.abs(g.lat)>90||Math.abs(g.lng)>180||g.accuracy<0||g.accuracy>10||now-g.stamp>10000||g.stamp>now+1000||g.stamp<=lastStamp){reason='GPS rejeitado: precisão, idade ou duplicação';return;}
   lastStamp=g.stamp;accuracy=g.accuracy;
   if(lastRaw){const distance=length(metres(g,lastRaw));if(distance>3*Math.max(0,(g.stamp-lastRaw.stamp)/1000)+g.accuracy+lastRaw.accuracy){reason='Salto GPS rejeitado';return;}}
@@ -39,3 +39,4 @@ export function createGpsCorrection({mode='relative',route}){
  }
  return {gps,update,diagnostics:()=>({reason,accuracy,offset:{...offset},correctionMetres:length(offset),aligned:!!fix})};
 }
+
