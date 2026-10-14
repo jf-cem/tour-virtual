@@ -1,5 +1,5 @@
 import {loadR11} from './r11/load.js';
-import {createSpatial} from './spatial-xr8.js';
+import {createSpatial} from './spatial-xr8.js?v=recovery5';
 import * as THREE from 'three';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
 import {createPhone} from './phone.js?v=1.4.4';
