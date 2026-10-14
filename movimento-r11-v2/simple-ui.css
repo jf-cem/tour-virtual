@@ -1,5 +1,6 @@
 header[hidden],.context,.progress-summary,#reset,#compact-status{display:none!important}
 .controls.glass{transform:none!important;margin:0!important}
+.controls .progress-head .simple-title strong{max-width:none;overflow:visible;text-overflow:clip;white-space:normal}.controls.glass.minimized .progress-head{padding:12px 14px;border-bottom:1px solid #d8e4dc}
 .controls #controls-body{max-height:calc(100dvh - 235px);overflow:auto}.controls #simple-export{padding:0 14px 14px}
 .controls.glass{position:fixed;top:max(12px,env(safe-area-inset-top));bottom:auto;left:12px;right:auto;width:min(400px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;border-radius:18px;background:linear-gradient(135deg,#f5faf7ed,#e7f1ebeb);border:1px solid #ffffffaa;overflow:auto;box-shadow:0 6px 28px #0003;backdrop-filter:blur(14px)}
 .controls .progress-head{padding:12px 14px;margin:0;gap:8px;border-bottom:1px solid #d8e4dc;align-items:center}.simple-title{flex:1}.simple-title strong{display:block;font-size:18px;color:#163d2c}.simple-title span{display:block;font-size:13px;margin-top:3px;color:#486657}
