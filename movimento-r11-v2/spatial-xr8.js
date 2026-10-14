@@ -46,7 +46,8 @@ export function createSpatial({onStart,onPose,onStop,isReady}){
      if(token!==run)return;const r=processCpuResult?.reality,t=performance.now();lastSample=t;
      if(t-log>200){log=t;record({type:'tracking',status:r?.trackingStatus??'MISSING',reason:r?.trackingReason??null,position:r?.position??null,rotation:r?.rotation??null,phase});}
      if(!r||r.trackingStatus!=='NORMAL'){stableSince=null;candidate=null;if(origin)freeze(t,'A recuperar o movimento. Para um momento e aponta para uma zona com detalhes.');return;}
-     const p=new THREE.Vector3(r.position?.x,r.position?.y,r.position?.z),q=new THREE.Quaternion(r.rotation?.x,r.rotation?.y,r.rotation?.z,r.rotation?.w);
+     if(![r.position?.x,r.position?.y,r.position?.z,r.rotation?.x,r.rotation?.y,r.rotation?.z,r.rotation?.w].every(Number.isFinite)){if(origin)requireRecalibration('missing-pose');return;}
+     const p=new THREE.Vector3(r.position.x,r.position.y,r.position.z),q=new THREE.Quaternion(r.rotation.x,r.rotation.y,r.rotation.z,r.rotation.w);
      if(![...p.toArray(),...q.toArray()].every(Number.isFinite)||q.lengthSq()<.5){if(origin)requireRecalibration('invalid-pose');return;}q.normalize();
      if(!origin){
       if(candidate&&(p.distanceTo(candidate)>.15)){stableSince=null;}candidate=p.clone();stableSince??=t;
