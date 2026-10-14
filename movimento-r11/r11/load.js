@@ -12,7 +12,7 @@ import {attachGrass,environment} from './r2-materials.js';
 export async function loadR11(scene,renderer){
 const config=await fetch('./r11/presentation.json').then(r=>r.json()),id='pilot-mixed';
 const mats=root=>{const set=new Set();root.traverse(o=>{if(o.isMesh)for(const m of Array.isArray(o.material)?o.material:[o.material])set.add(m)});return [...set]};
-const ktx=new KTX2Loader().setTranscoderPath('../vendor/libs/basis/').setWorkerLimit(2).detectSupport(renderer);
+const ktx=new KTX2Loader().setTranscoderPath(new URL('./vendor/libs/basis/',location.href).href).setWorkerLimit(2).detectSupport(renderer);
 const loader=new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx);
 let model,asset,grassmap,envTarget,houseEnvTarget,woodmap,r8Aux,r8Surfaces;
 const micromap=await new THREE.TextureLoader().loadAsync('./r11/textures/microdetail.png');
@@ -32,3 +32,4 @@ const gltf=await loader.loadAsync('./model-r11.glb');model=gltf.scene;asset=id;s
  if(id.startsWith('pilot')||id.startsWith('r8')||id.startsWith('r9')){const texloader=new THREE.TextureLoader();const [normal,roughness]=await Promise.all(['R8_metal-normal.png','R8_metal-roughness.png'].map(f=>texloader.loadAsync('./r11/textures/'+f)));for(const t of [normal,roughness]){t.colorSpace=THREE.NoColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=2}normal.name='R8_Source_Metal_Normal';roughness.name='R8_Source_Metal_Roughness';r8Aux={normal,roughness};r8Surfaces=installSurfaces(model,scene,renderer,envTarget,r8Aux)}if(id.startsWith('pilot'))await installR10(model,ktx,envTarget,houseEnvTarget,r8Aux,renderer);if(id==='pilot-mixed')installR11(model,envTarget,houseEnvTarget);
 return {model,update:time=>r8Surfaces?.update(time)};
 }
+
