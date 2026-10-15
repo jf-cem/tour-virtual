@@ -1,4 +1,4 @@
 [
   {"id":"P01","label":"Ponto 0","position":[8.881784197001252e-16,3,0],"yaw":-1.5707963267948966},
-  {"id":"P06","label":"Ponto CEM","position":[-39.86039052902377,3,-0.18889983572766766],"yaw":-1.5707963267948966}
+  {"id":"CEM_FRONT","label":"Ponto CEM","position":[-31,3,-0.15],"yaw":-1.5707963267948966,"pitch":-0.03,"reference":"Frontal da casa e círculo, conforme imagem Panorama 06 da tour panorâmica; correspondência visual aproximada no modelo r11."}
 ]
