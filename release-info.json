@@ -1,0 +1,8 @@
+{
+  "release": "r21-integrado-20261021",
+  "graphics": "qualidade-movel-r21-interior",
+  "interactions": "integracao-r17-interacoes-v1",
+  "modelSha256": "477201d92cbeab3c8ff0900a4db99f7ef48d6ff94e9b26b4499302fef48b9eac",
+  "previousMain": "b667d05a4caf77fed95f9d9ee565322de848f87e",
+  "url": "https://jf-cem.github.io/tour-virtual/"
+}

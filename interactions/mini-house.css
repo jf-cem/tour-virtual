@@ -1,0 +1,39 @@
+/* CSS 3D house reused from running mappquete M2 (localhost:8766), 20/10/2026. Scoped for the tour. */
+.phone-orientation .radar-dial{ --angle:0deg; position:relative; width:min(76vw,330px); aspect-ratio:1; border:2px solid #355494; border-radius:50%; background:radial-gradient(circle,#17326033 0 4%,transparent 5%),radial-gradient(circle,#0b234c 0,#071a3a 60%,#06142d 100%); box-shadow:inset 0 0 50px #244a8d1f,0 26px 28px #0008; transform:rotateX(56deg) rotateZ(-5deg); transform-origin:center 54%; transform-style:preserve-3d; }
+.phone-orientation .orbit{ position:absolute; border:1px dashed #244376; border-radius:50%; inset:17%; opacity:.7; }
+.phone-orientation .orbit-b{ inset:32%; }
+.phone-orientation .cardinal{ position:absolute; color:#8194bc; font-weight:700; font-size:13px; }
+.phone-orientation .cardinal.north{ top:-21px; left:50%; transform:translateX(-50%); }
+.phone-orientation .cardinal.west{ left:-42px; top:50%; transform:translateY(-50%); }
+.phone-orientation .cardinal.east{ right:-42px; top:50%; transform:translateY(-50%); }
+.phone-orientation .house-shadow{ position:absolute; left:50%; top:50%; width:94px; height:34px; border-radius:50%; background:#02081499; filter:blur(6px); transform:translate(-50%,-50%) rotate(var(--angle)) translateZ(1px); transform-style:preserve-3d; }
+.phone-orientation .radar-body{ position:absolute; left:50%; top:50%; width:118px; height:110px; transform:translate(-50%,-50%) rotate(var(--angle)); transform-style:preserve-3d; transition:transform .1s linear; }
+.phone-orientation .radar-body img{ display:block; width:210px; height:auto; transform:translate(-46px,-108px); filter:drop-shadow(0 8px 5px #02081488); }
+.phone-orientation .house-3d{ position:absolute; left:50%; top:calc(50% - 76px); width:100px; height:76px; transform:translateX(-50%) rotateX(-90deg); transform-origin:50% 100%; transform-style:preserve-3d; }
+.phone-orientation .house-volume{ position:absolute; left:12px; top:30px; width:76px; height:46px; transform-style:preserve-3d; }
+.phone-orientation .house-face{ position:absolute; width:76px; height:46px; border:2px solid #4969ad; background:linear-gradient(145deg,#173666,#0b214a); backface-visibility:hidden; }
+.phone-orientation .house-front{ transform:translateZ(27px); }
+.phone-orientation .house-back{ transform:rotateY(180deg) translateZ(27px); background:linear-gradient(145deg,#102546,#07152e); }
+.phone-orientation .house-left,.phone-orientation .house-right{ left:-27px; width:54px; }
+.phone-orientation .house-right{ left:49px; }
+.phone-orientation .house-left{ transform:rotateY(-90deg); background:linear-gradient(145deg,#274d85,#0d1e3b); }
+.phone-orientation .house-right{ transform:rotateY(90deg); background:linear-gradient(145deg,#3c69a5,#122b53); }
+.phone-orientation .house-door{ position:absolute; left:12px; bottom:0; width:17px; height:31px; border:1px solid #9fbfff; border-bottom:0; border-radius:3px 3px 0 0; background:#244c87; }
+.phone-orientation .house-window{ position:absolute; right:12px; top:11px; width:22px; height:17px; border:2px solid #b9d5ff; border-radius:2px; background:#6693ef; box-shadow:0 0 8px #7fa8ff55; }
+.phone-orientation .side-window{ position:absolute; left:15px; top:12px; width:20px; height:16px; border:2px solid #a7c9ff; background:#527eba; }
+.phone-orientation .house-roof{ position:absolute; left:12px; top:30px; width:76px; height:60px; transform:translateZ(0); transform-style:preserve-3d; }
+.phone-orientation .roof-plane{ position:absolute; width:56.6px; height:60px; border:0; background:linear-gradient(145deg,#89adf4,#294e8f 70%,#172c54); backface-visibility:hidden; box-shadow:inset 0 0 0 1px #4969ad; }
+.phone-orientation .roof-left{ left:0; top:0; transform-origin:0 0; transform:translateZ(-30px) rotateZ(-47.9deg) rotateX(90deg); }
+.phone-orientation .roof-right{ left:38px; top:-42px; transform-origin:0 0; transform:translateZ(-30px) rotateZ(47.9deg) rotateX(90deg); background:linear-gradient(145deg,#b8d1ff,#3f68a4 70%,#1b3563); }
+.phone-orientation .roof-gable{ position:absolute; left:0; top:-42px; width:76px; height:42px; clip-path:polygon(50% 0,100% 100%,0 100%); background:#3f6090; backface-visibility:hidden; }
+.phone-orientation .roof-front{ transform:translateZ(27px); }
+.phone-orientation .roof-back{ transform:rotateY(180deg) translateZ(27px); background:#28466f; }
+#house-controls[data-presentation=phone] .phone-orientation{position:relative;display:flex;align-items:center;justify-content:center;perspective:530px;height:148px}
+.phone-orientation *{box-sizing:border-box}
+.phone-orientation .radar-dial{width:330px;height:330px;flex:none;transform:translateY(-12px) scale(.52) rotateX(56deg) rotateZ(-5deg)}
+.phone-orientation .radar-body{transition:none}
+
+.phone-orientation{pointer-events:none}
+.phone-orientation .radar-dial{box-shadow:inset 0 0 50px #244a8d1f}
+
+.phone-orientation{overflow:clip}
