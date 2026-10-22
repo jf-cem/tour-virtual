@@ -2,3 +2,5 @@
 #loading .loading-logo{display:block;width:100%;max-width:270px;height:auto;max-height:38dvh;object-fit:contain;margin:0 auto 16px}
 #loading progress{display:block;width:100%;height:12px;accent-color:#235641;margin:0 0 10px}
 #loading-text{display:block;font-size:14px;line-height:1.45}
+
+#loading .loading-logo{filter:invert(1)}
