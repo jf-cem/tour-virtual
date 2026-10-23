@@ -90,3 +90,4 @@ canvas.drawing-route{cursor:crosshair}
 
 /* Compact orientation section while keeping the sensor toggle easy to tap. */
 .controls .look-section{padding:8px 0 9px}.controls .look-section h2{margin-bottom:6px}.controls .look-section #motion-status{margin-top:5px}
+.day-controls .day-row{display:flex;align-items:center;gap:12px}.day-controls input[type=range]{flex:1;min-width:0}.day-controls output{font-variant-numeric:tabular-nums;font-weight:700}.day-presets{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.day-controls p{font-size:12px}.day-controls summary{cursor:pointer}

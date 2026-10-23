@@ -1,0 +1,79 @@
+[
+  {
+    "object": "P01_Ground",
+    "file": "P01_Ground.ktx2",
+    "targets": [
+      "P01_P03_Ground_BAKED_UNLIT"
+    ],
+    "size": 2048,
+    "seconds": 7.060445070266724,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 1111492
+  },
+  {
+    "object": "P04_P05_Ground",
+    "file": "P04_P05_Ground.ktx2",
+    "targets": [
+      "P04_P05_Ground_BAKED_UNLIT.005"
+    ],
+    "size": 2048,
+    "seconds": 5.702788352966309,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 208155
+  },
+  {
+    "object": "P06_P07_Ground",
+    "file": "P06_P07_Ground.ktx2",
+    "targets": [
+      "P06_P07_Ground_BAKED_UNLIT"
+    ],
+    "size": 1024,
+    "seconds": 3.935121536254883,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 659641
+  },
+  {
+    "object": "R6_House_Seats",
+    "file": "R6_House_Seats.ktx2",
+    "targets": [
+      "R6_Seats_Lighting_BAKED_UNLIT"
+    ],
+    "size": 1024,
+    "seconds": 3.95054292678833,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 204748
+  },
+  {
+    "object": "R6_House_Equipment",
+    "file": "R6_House_Equipment.ktx2",
+    "targets": [
+      "R6_Equipment_Lighting_BAKED_UNLIT"
+    ],
+    "size": 1024,
+    "seconds": 3.655087947845459,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 107483
+  },
+  {
+    "object": "R8_Bench_Wood",
+    "file": "R8_Bench_Wood.ktx2",
+    "targets": [
+      "R8_Bench_Wood_BAKED_UNLIT"
+    ],
+    "size": 1024,
+    "seconds": 3.9006049633026123,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 765903
+  },
+  {
+    "object": "R8_Charger_Body",
+    "file": "R8_Charger_Body.ktx2",
+    "targets": [
+      "R8_Charger_Body_STATIC_PBR"
+    ],
+    "size": 1024,
+    "seconds": 3.956313371658325,
+    "method": "base-colour EMIT, no direct/indirect/AO",
+    "bytes": 361232
+  }
+]

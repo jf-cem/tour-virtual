@@ -1,10 +1,11 @@
 {
-  "release": "r21-miniatura-20261022",
+  "release": "r21-dia-noite-20261023",
   "graphics": "qualidade-movel-r21-interior",
   "interactions": "integracao-r17-interacoes-v1",
   "modelSha256": "477201d92cbeab3c8ff0900a4db99f7ef48d6ff94e9b26b4499302fef48b9eac",
-  "previousMain": "b667d05a4caf77fed95f9d9ee565322de848f87e",
+  "previousMain": "0edfd89110c586579b2926ebf45798bcc6dd398a",
   "url": "https://jf-cem.github.io/tour-virtual/",
   "loadingGifSha256": "d737cdd1000041c860c9af9b607ad71eaaefd03400ecf00c84304a1093bce1bb",
-  "phonePreview": "actual R21 envelope/platform geometry, untextured miniature, lazy render"
+  "phonePreview": "actual R21 envelope/platform geometry, untextured miniature, lazy render",
+  "lighting": "iluminacao-dia-noite-v1; dynamic albedo; east behind house; 120s per day"
 }
